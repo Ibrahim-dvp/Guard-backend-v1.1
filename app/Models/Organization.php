@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Organization extends Model
+{
+    use HasFactory;
+    use HasUuids;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'parent_id',
+        'director_id',
+        'is_active',
+    ];
+
+    /**
+     * Get the parent organization.
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class, 'parent_id');
+    }
+
+    /**
+     * Get the child organizations.
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(Organization::class, 'parent_id');
+    }
+
+    /**
+     * Get the director of the organization.
+     */
+    public function director(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'director_id');
+    }
+
+    /**
+     * Get the users in the organization.
+     */
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+}
