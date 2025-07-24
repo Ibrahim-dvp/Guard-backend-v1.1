@@ -12,13 +12,18 @@ class EloquentUserRepository implements UserRepositoryInterface
 {
     public function getAllUsers(User $currentUser): Collection
     {
-        if ($currentUser->hasRole(['Admin', 'Group Director', 'Partner Director'])) {
+        if ($currentUser->hasRole(['Admin', 'Group Director'])) {
             return User::with(['roles', 'organization'])->get();
         }
 
-        // For now, other roles can only see themselves.
-        // We can expand this later for Sales Managers to see their team.
-        return new Collection([$currentUser->load(['roles', 'organization'])]);
+        if ($currentUser->organization) {
+            return User::where('organization_id', $currentUser->organization_id)
+                ->with(['roles', 'organization'])
+                ->get();
+        }
+
+        // If user has no organization, they can only see themselves.
+        return new Collection([$currentUser->loadMissing(['roles', 'organization'])]);
     }
 
     public function getUserById(string $userId): ?User
@@ -28,7 +33,8 @@ class EloquentUserRepository implements UserRepositoryInterface
 
     public function createUser(array $userDetails): User
     {
-        return User::create($userDetails);
+        $user = User::create($userDetails);
+        return $user->load(['roles', 'organization']);
     }
 
     public function updateUser(User $user, array $newDetails): User

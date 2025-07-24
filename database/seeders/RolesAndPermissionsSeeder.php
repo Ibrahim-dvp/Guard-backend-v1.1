@@ -22,7 +22,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Define Permissions using a simple resource.action convention
         $permissions = [
             'users.create', 'users.view', 'users.update', 'users.delete',
-            'organizations.create', 'organizations.view', 'organizations.update',
+            'organizations.create', 'organizations.view', 'organizations.update', 'organizations.delete',
             'leads.create', 'leads.view', 'leads.assign', 'leads.accept-decline', 'leads.update-status',
             'reports.view'
         ];
@@ -41,19 +41,21 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Partner Director: Manages their own organization and users
         Role::create(['name' => 'Partner Director'])->givePermissionTo([
-            'organizations.view', 'organizations.update',
+            'organizations.view', 'organizations.update', 'organizations.delete',
             'users.create', 'users.view', 'users.update',
             'reports.view'
         ]);
 
         // Coordinator: Manages incoming leads and assignment
         Role::create(['name' => 'Coordinator'])->givePermissionTo([
+            'organizations.view',
             'leads.view',
             'leads.assign'
         ]);
 
         // Sales Manager: Manages a team of agents and their leads
         Role::create(['name' => 'Sales Manager'])->givePermissionTo([
+            'organizations.view',
             'users.create', 'users.view',
             'leads.view', 'leads.assign', 'leads.accept-decline',
             'reports.view'
@@ -61,6 +63,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Sales Agent: Manages leads assigned to them
         Role::create(['name' => 'Sales Agent'])->givePermissionTo([
+            'organizations.view',
             'leads.view',
             'leads.accept-decline',
             'leads.update-status'
@@ -68,6 +71,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Referral: Can create leads and view their own
         Role::create(['name' => 'Referral'])->givePermissionTo([
+            'organizations.view',
             'leads.create',
             'leads.view'
         ]);

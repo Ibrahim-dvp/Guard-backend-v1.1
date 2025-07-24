@@ -48,7 +48,9 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', $user);
-        return new UserResource($user->load(['roles', 'organization']));
+        // The repository should handle eager-loading, but for route-model binding, we load here.
+        // This is acceptable for a single resource view.
+        return new SuccessResource(new UserResource($user->load(['roles', 'organization'])));
     }
 
     /**

@@ -27,7 +27,7 @@ class UserService
     {
         $data['password'] = Hash::make($data['password']);
         $user = $this->userRepository->createUser($data);
-        $user->assignRole($data['role_name']);
+        $user->assignRole(roles: $data['role_name']);
         return $user;
     }
 
@@ -41,7 +41,14 @@ class UserService
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         }
-        return $this->userRepository->updateUser($user, $data);
+
+        $user = $this->userRepository->updateUser($user, $data);
+
+        if (isset($data['role_name'])) {
+            $user->syncRoles([$data['role_name']]);
+        }
+
+        return $user;
     }
 
     public function deleteUser(User $user)

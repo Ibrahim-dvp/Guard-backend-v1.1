@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AllowedToUpdateRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,6 +29,7 @@ class UpdateUserRequest extends FormRequest
             'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($this->user)],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'organization_id' => ['nullable', 'uuid', 'exists:organizations,id'],
+            'role_name' => ['sometimes', 'string', 'exists:roles,name', new AllowedToUpdateRole()],
         ];
     }
 }

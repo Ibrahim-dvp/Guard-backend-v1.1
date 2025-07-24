@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AllowedToCreateRole;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
@@ -27,7 +28,7 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'organization_id' => ['nullable', 'uuid', 'exists:organizations,id'],
-            'role_name' => ['required', 'string', 'exists:roles,name'],
+            'role_name' => ['required', 'string', 'exists:roles,name', new AllowedToCreateRole()],
         ];
     }
 }

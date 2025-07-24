@@ -7,9 +7,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class SuccessResource extends JsonResource
 {
-    private string $message;
+    private ?string $message;
 
-    public function __construct($resource, string $message)
+    public function __construct($resource, string $message = null)
     {
         parent::__construct($resource);
         $this->message = $message;
@@ -24,8 +24,8 @@ class SuccessResource extends JsonResource
     {
         return [
             'success' => true,
-            'message' => $this->message,
             'data' => $this->resource,
+            'message' => $this->message ?? 'Operation completed successfully',
         ];
     }
 }
