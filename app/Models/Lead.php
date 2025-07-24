@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\LeadStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Lead extends Model
 {
@@ -25,6 +27,7 @@ class Lead extends Model
         'client_info',
         'status',
         'assigned_to_id',
+        'assigned_by_id',
         'source',
         'revenue',
     ];
@@ -36,6 +39,7 @@ class Lead extends Model
      */
     protected $casts = [
         'client_info' => 'array',
+        'status' => LeadStatus::class,
     ];
 
     /**
@@ -60,5 +64,29 @@ class Lead extends Model
     public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to_id');
+    }
+
+    /**
+     * Get the user who assigned the lead.
+     */
+    public function assignedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_by_id');
+    }
+
+    /**
+     * Get the notes for the lead.
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
+
+    /**
+     * Get the appointments for the lead.
+     */
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
     }
 }

@@ -14,7 +14,7 @@ class EloquentLeadRepository implements LeadRepositoryInterface
 {
     public function getAll(User $currentUser, array $filters): LengthAwarePaginator
     {
-        $query = Lead::with(['referral', 'assignedTo', 'organization']);
+        $query = Lead::with(relations: ['referral', 'assignedTo', 'assignedBy', 'organization']);
 
         $this->applyRoleBasedFilters($query, $currentUser);
         $this->applyFrontendFilters($query, $filters);
@@ -43,13 +43,14 @@ class EloquentLeadRepository implements LeadRepositoryInterface
         return $lead->delete();
     }
 
-    public function assign(Lead $lead, User $assignee, User $assigner): Lead
+    public function assign(Lead $lead, User $assignee, User $assigner, string $newStatus): Lead
     {
         $lead->assigned_to_id = $assignee->id;
-        $lead->assigned_by_id = $assigner->id; // Assuming an 'assigned_by_id' column exists
-        $lead->status = 'assigned_to_manager'; // Or determine status dynamically
+        $lead->assigned_by_id = $assigner->id;
+        $lead->organization_id = $assignee->organization_id;
+        $lead->status = $newStatus;
         $lead->save();
-        return $lead->fresh(['referral', 'assignedTo', 'organization']);
+        return $lead->fresh(['referral', 'assignedTo', 'assignedBy', 'organization']);
     }
 
     public function updateStatus(Lead $lead, string $status): Lead
@@ -68,13 +69,15 @@ class EloquentLeadRepository implements LeadRepositoryInterface
         if ($currentUser->hasRole('Sales Manager')) {
             $query->where(function (Builder $q) use ($currentUser) {
                 $q->where('assigned_to_id', $currentUser->id) // Leads assigned to the manager
-                  ->orWhereIn('assigned_to_id', function ($subQuery) use ($currentUser) {
-                      $subQuery->select('id')->from('users')->where('created_by', $currentUser->id);
-                  }); // Or leads assigned to their team members
+                    ->orWhereIn('assigned_to_id', function ($subQuery) use ($currentUser) {
+                        $subQuery->select('id')->from('users')->where('created_by', $currentUser->id);
+                    }); // Or leads assigned to their team members
             });
         }
 
-        // Add more complex role filters for Partner Director, etc. here
+        if ($currentUser->hasRole('Partner Director')) {
+            $query->where('organization_id', $currentUser->organization_id);
+        }
     }
 
     private function applyFrontendFilters(Builder $query, array $filters): void
@@ -90,8 +93,8 @@ class EloquentLeadRepository implements LeadRepositoryInterface
         if (isset($filters['search'])) {
             $query->where(function (Builder $q) use ($filters) {
                 $q->where('client_info->firstName', 'like', "%{$filters['search']}%")
-                  ->orWhere('client_info->lastName', 'like', "%{$filters['search']}%")
-                  ->orWhere('client_info->email', 'like', "%{$filters['search']}%");
+                    ->orWhere('client_info->lastName', 'like', "%{$filters['search']}%")
+                    ->orWhere('client_info->email', 'like', "%{$filters['search']}%");
             });
         }
 

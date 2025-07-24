@@ -26,8 +26,9 @@ class UserService
     public function createUser(array $data)
     {
         $data['password'] = Hash::make($data['password']);
+        $data['created_by'] = Auth::id(); // Set the creator
         $user = $this->userRepository->createUser($data);
-        $user->assignRole(roles: $data['role_name']);
+        $user->assignRole($data['role_name']);
         return $user;
     }
 

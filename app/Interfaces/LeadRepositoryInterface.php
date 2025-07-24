@@ -20,7 +20,7 @@ interface LeadRepositoryInterface
 
     public function delete(Lead $lead): bool;
 
-    public function assign(Lead $lead, User $assignee, User $assigner): Lead;
+    public function assign(Lead $lead, User $assignee, User $assigner, string $newStatus): Lead;
 
     public function updateStatus(Lead $lead, string $status): Lead;
 }

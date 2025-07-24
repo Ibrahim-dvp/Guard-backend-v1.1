@@ -21,6 +21,13 @@ class AllowedToCreateRole implements ValidationRule
             return; // Admins can create any role
         }
 
+        if ($user->hasRole('Partner Director')) {
+            if (!in_array($value, ['Sales Manager', 'Sales Agent'])) {
+                $fail("As a Partner Director, you can only create Sales Managers or Sales Agents.");
+            }
+            return;
+        }
+
         if ($user->hasRole('Sales Manager')) {
             if ($value !== 'Sales Agent') {
                 $fail("As a Sales Manager, you are only allowed to create users with the 'Sales Agent' role.");
