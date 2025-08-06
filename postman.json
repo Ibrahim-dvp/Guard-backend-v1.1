@@ -1,0 +1,309 @@
+{
+    "info": {
+        "name": "Guard API v1.1",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        { "key": "base_url", "value": "http://localhost:8000/api/v1" },
+        { "key": "auth_token", "value": "1|Pqp82xIuHPOCCk1lAeqeWrtFJiRUfBjMtIBgk9F562415b1a" }
+    ],
+    "item": [
+        {
+            "name": "Auth - Login",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/login",
+                    "host": ["{{base_url}}"],
+                    "path": ["login"]
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"email\": \"admin@guard.com\",\n  \"password\": \"password123\"\n}",
+                    "options": { "raw": { "language": "json" } }
+                }
+            }
+        },
+        {
+            "name": "Get Current User",
+            "request": {
+                "method": "GET",
+                "header": [
+                    { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/user",
+                    "host": ["{{base_url}}"],
+                    "path": ["user"]
+                }
+            }
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "List Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["users"]
+                        }
+                    }
+                },
+                {
+                    "name": "Create User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["users"]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"first_name\": \"Test\",\n  \"last_name\": \"User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\",\n  \"role_name\": \"Sales Agent\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Organizations",
+            "item": [
+                {
+                    "name": "List Organizations",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/organizations",
+                            "host": ["{{base_url}}"],
+                            "path": ["organizations"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Leads",
+            "item": [
+                {
+                    "name": "List Leads",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/leads",
+                            "host": ["{{base_url}}"],
+                            "path": ["leads"]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Lead",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/leads",
+                            "host": ["{{base_url}}"],
+                            "path": ["leads"]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"client_info\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\"\n  },\n  \"source\": \"Website\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Assign Lead",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/leads/LEAD_ID/assign",
+                            "host": ["{{base_url}}"],
+                            "path": ["leads", "LEAD_ID", "assign"]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"assignee_id\": \"USER_ID\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Teams",
+            "item": [
+                {
+                    "name": "List Teams",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/teams",
+                            "host": ["{{base_url}}"],
+                            "path": ["teams"]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Team",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/teams",
+                            "host": ["{{base_url}}"],
+                            "path": ["teams"]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"New Team\",\n  \"description\": \"A test team\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Add User to Team",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/teams/TEAM_ID/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["teams", "TEAM_ID", "users"]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"user_id\": \"USER_ID\"\n}",
+                            "options": { "raw": { "language": "json" } }
+                        }
+                    }
+                },
+                {
+                    "name": "Remove User from Team",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/teams/TEAM_ID/users/USER_ID",
+                            "host": ["{{base_url}}"],
+                            "path": ["teams", "TEAM_ID", "users", "USER_ID"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Team Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/teams/TEAM_ID/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["teams", "TEAM_ID", "users"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User's Teams",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users/USER_ID/teams",
+                            "host": ["{{base_url}}"],
+                            "path": ["users", "USER_ID", "teams"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get My Teams",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/my-teams",
+                            "host": ["{{base_url}}"],
+                            "path": ["my-teams"]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

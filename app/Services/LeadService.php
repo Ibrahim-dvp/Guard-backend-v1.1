@@ -28,10 +28,11 @@ class LeadService
 
     public function createLead(array $details): Lead
     {
+        /** @var User $user */
         $user = Auth::user();
         $details['referral_id'] = $user->id;
-        // Organization is set upon assignment
-        $details['organization_id'] = null;
+        // Set organization to referral user's organization initially
+        $details['organization_id'] = $user->organization_id;
         $details['status'] = LeadStatus::NEW;
         return $this->leadRepository->create($details);
     }

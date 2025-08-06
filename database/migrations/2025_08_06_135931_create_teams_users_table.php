@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('teams_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->constrained('teams')->nullOnDelete();
-            $table->foreignId('user_id')->constrained('users')->nullOnDelete();
+            $table->uuid('team_id');
+            $table->uuid('user_id');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unique(['team_id', 'user_id']);
             $table->timestamps();
         });
     }
