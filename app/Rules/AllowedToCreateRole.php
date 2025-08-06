@@ -17,6 +17,10 @@ class AllowedToCreateRole implements ValidationRule
     {
         $user = Auth::user();
 
+        if ($value === 'Referral') {
+            return; // Anyone can create a Referral
+        }
+
         if ($user->hasRole('Admin')) {
             return; // Admins can create any role
         }
