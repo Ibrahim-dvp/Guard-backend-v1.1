@@ -99,4 +99,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Lead::class, 'assigned_to_id');
     }
+
+    /**
+     * Get the teams that this user belongs to.
+     */
+    public function teams()
+    {
+        return $this->belongsToMany( Team::class, 'teams_users');
+
+    }
 }

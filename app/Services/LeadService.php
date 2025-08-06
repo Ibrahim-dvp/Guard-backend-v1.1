@@ -48,6 +48,7 @@ class LeadService
 
     public function assignLead(Lead $lead, string $assigneeId): Lead
     {
+        /** @var User $assigner */
         $assigner = Auth::user();
         $assignee = User::findOrFail($assigneeId);
         $newStatus = LeadStatus::NEW; // Default, should not be used
