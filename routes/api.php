@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\OrganizationController;
@@ -22,6 +23,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'middleware' => 'auth:sanctum
     Route::apiResource('organizations', OrganizationController::class);
     Route::apiResource('leads', LeadController::class);
     Route::apiResource('teams', TeamController::class);
+    Route::apiResource('appointments', AppointmentController::class);
 
     // Lead specific routes
     Route::post('leads/{lead}/assign', [LeadController::class, 'assign'])->name('leads.assign');
@@ -33,4 +35,16 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'middleware' => 'auth:sanctum
     Route::get('teams/{team}/users', [TeamController::class, 'getTeamUsers'])->name('teams.users');
     Route::get('users/{user}/teams', [TeamController::class, 'getUserTeams'])->name('users.teams');
     Route::get('my-teams', [TeamController::class, 'getUserTeams'])->name('my.teams');
+
+    // Appointment specific routes
+    Route::patch('appointments/{appointment}/reschedule', [AppointmentController::class, 'reschedule'])->name('appointments.reschedule');
+    Route::patch('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
+    Route::patch('appointments/{appointment}/complete', [AppointmentController::class, 'markCompleted'])->name('appointments.complete');
+    Route::patch('appointments/{appointment}/confirm', [AppointmentController::class, 'confirm'])->name('appointments.confirm');
+    Route::patch('appointments/{appointment}/no-show', [AppointmentController::class, 'markNoShow'])->name('appointments.noShow');
+    Route::get('appointments/upcoming', [AppointmentController::class, 'upcoming'])->name('appointments.upcoming');
+    Route::get('appointments/status/{status}', [AppointmentController::class, 'byStatus'])->name('appointments.byStatus');
+    Route::get('appointments/statistics', [AppointmentController::class, 'statistics'])->name('appointments.statistics');
+    Route::get('appointments/schedule/daily', [AppointmentController::class, 'dailySchedule'])->name('appointments.dailySchedule');
+    Route::get('appointments/schedule/weekly', [AppointmentController::class, 'weeklySchedule'])->name('appointments.weeklySchedule');
 });

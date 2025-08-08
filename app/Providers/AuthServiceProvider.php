@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Appointment;
 use App\Models\Lead;
 use App\Models\Organization;
 use App\Models\Team;
 use App\Models\User;
+use App\Policies\AppointmentPolicy;
 use App\Policies\LeadPolicy;
 use App\Policies\OrganizationPolicy;
 use App\Policies\TeamPolicy;
@@ -24,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         Organization::class => OrganizationPolicy::class,
         Lead::class => LeadPolicy::class,
         Team::class => TeamPolicy::class,
+        Appointment::class => AppointmentPolicy::class,
     ];
 
     /**

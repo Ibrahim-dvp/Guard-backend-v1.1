@@ -21,7 +21,7 @@ class AllowedToCreateRole implements ValidationRule
             return; // Anyone can create a Referral
         }
 
-        if ($user->hasRole('Admin')) {
+        if ($user->hasRole('Admin','Group Director')) {
             return; // Admins can create any role
         }
 

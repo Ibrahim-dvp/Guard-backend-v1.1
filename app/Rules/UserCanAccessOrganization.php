@@ -17,7 +17,7 @@ class UserCanAccessOrganization implements ValidationRule
     {
         $user = Auth::user();
 
-        if ($user->hasRole('Admin')) {
+        if ($user->hasRole('Admin', 'Group Director')) {
             return; // Admins can access any organization
         }
 

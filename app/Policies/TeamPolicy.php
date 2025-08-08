@@ -13,7 +13,7 @@ class TeamPolicy
      */
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->hasRole(['Super Admin', 'Admin'])) {
+        if ($user->hasRole(['Super Admin', 'Admin','Group Director'])) {
             return true;
         }
 
@@ -43,7 +43,7 @@ class TeamPolicy
         }
 
         // Directors can view teams within their organization
-        if ($user->hasRole('Director')) {
+        if ($user->hasRole('Partner Director')) {
             return $user->organization_id === $team->creator->organization_id;
         }
 
@@ -56,6 +56,9 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
+        if ($user->hasRole('Partner Director')) {
+            return $user->organization_id === $team->creator->organization_id;
+        }
         return $user->can('teams.create');
     }
 
@@ -73,8 +76,8 @@ class TeamPolicy
             return true;
         }
 
-        // Directors can update teams within their organization
-        if ($user->hasRole('Director')) {
+        // Partner Directors can update teams within their organization
+        if ($user->hasRole('Partner Director')) {
             return $user->organization_id === $team->creator->organization_id;
         }
 

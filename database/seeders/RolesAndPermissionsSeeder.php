@@ -25,6 +25,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'organizations.create', 'organizations.view', 'organizations.update', 'organizations.delete',
             'leads.create', 'leads.view', 'leads.assign', 'leads.accept-decline', 'leads.update-status',
             'teams.create', 'teams.view', 'teams.update', 'teams.delete', 'teams.manage_members',
+            'appointments.create', 'appointments.view', 'appointments.update', 'appointments.delete',
             'reports.view'
         ];
 
@@ -45,6 +46,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'organizations.view', 'organizations.update', 'organizations.delete',
             'users.create', 'users.view', 'users.update',
             'teams.create', 'teams.view', 'teams.update', 'teams.delete', 'teams.manage_members',
+            'appointments.view', 'appointments.create', 'appointments.update', 'appointments.delete',
             'reports.view'
         ]);
 
@@ -53,15 +55,17 @@ class RolesAndPermissionsSeeder extends Seeder
             'organizations.view',
             'teams.view',
             'leads.view',
-            'leads.assign'
+            'leads.assign',
+            'appointments.view', 'appointments.create'
         ]);
 
         // Sales Manager: Manages a team of agents and their leads
         Role::create(['name' => 'Sales Manager'])->givePermissionTo([
             'organizations.view',
             'users.create', 'users.view',
-            'teams.create', 'teams.view', 'teams.update', 'teams.manage_members',
+            'teams.manage_members',
             'leads.view', 'leads.assign', 'leads.accept-decline',
+            'appointments.view', 'appointments.create', 'appointments.update', 'appointments.delete',
             'reports.view'
         ]);
 
@@ -71,7 +75,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'teams.view',
             'leads.view',
             'leads.accept-decline',
-            'leads.update-status'
+            'leads.update-status',
+            'appointments.view', 'appointments.create', 'appointments.update'
         ]);
 
         // Referral: Can create leads and view their own
@@ -79,7 +84,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'organizations.view',
             'teams.view',
             'leads.create',
-            'leads.view'
+            'leads.view',
+            'appointments.view'
         ]);
     }
 }
