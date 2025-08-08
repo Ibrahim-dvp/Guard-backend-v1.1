@@ -5,7 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\User;
 class AllowedToCreateRole implements ValidationRule
 {
     /**
@@ -15,13 +15,14 @@ class AllowedToCreateRole implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        /** @var User $user */
         $user = Auth::user();
 
         if ($value === 'Referral') {
             return; // Anyone can create a Referral
         }
 
-        if ($user->hasRole('Admin','Group Director')) {
+        if ($user->hasRoles('Admin', 'Group Director')) {
             return; // Admins can create any role
         }
 

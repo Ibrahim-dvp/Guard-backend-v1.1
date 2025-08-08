@@ -5,6 +5,7 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class UserCanAccessOrganization implements ValidationRule
 {
@@ -15,9 +16,17 @@ class UserCanAccessOrganization implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        /** @var User $user */
         $user = Auth::user();
+        if ($attribute['role_name'] === 'Referral') {
+            // $organization = Organization::where('name', 'Group Director')->first();
+            // if ($organization) {
+            //     $value = $organization->id;
+            // }
+            return ; // Anyone can create a Referral without organization restriction
+        }
 
-        if ($user->hasRole('Admin', 'Group Director')) {
+        if ($user->hasRole('Admin')) {
             return; // Admins can access any organization
         }
 

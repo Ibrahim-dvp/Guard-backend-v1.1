@@ -28,7 +28,7 @@ class StoreUserRequest extends FormRequest
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'organization_id' => ['required', 'uuid', 'exists:organizations,id', new UserCanAccessOrganization()],
+            'organization_id' => ['nullable', 'uuid', 'exists:organizations,id', new UserCanAccessOrganization()],
             'role_name' => ['required', 'string', 'exists:roles,name', new AllowedToCreateRole()],
         ];
     }
