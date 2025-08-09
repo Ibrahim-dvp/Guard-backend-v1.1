@@ -14,7 +14,7 @@ class EloquentLeadRepository implements LeadRepositoryInterface
 {
     public function getAll(User $currentUser, array $filters): LengthAwarePaginator
     {
-        $query = Lead::with(relations: ['referral', 'assignedTo', 'assignedBy', 'organization']);
+        $query = Lead::with(relations: ['referral', 'assignedTo', 'assignedBy', 'organization'])->where('referral_id', $currentUser->id);
 
         $this->applyRoleBasedFilters($query, $currentUser);
         $this->applyFrontendFilters($query, $filters);
