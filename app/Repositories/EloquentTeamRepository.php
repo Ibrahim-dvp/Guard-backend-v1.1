@@ -76,19 +76,27 @@ class EloquentTeamRepository implements TeamRepositoryInterface
     private function applyRoleBasedFilters(Builder $query, User $currentUser): void
     {
         // Super Admin can see all teams
-        if ($currentUser->hasRole('Super Admin')) {
+        if ($currentUser->hasRole(['Super Admin', 'Admin', 'Group Director'])) {
             return;
         }
 
         // Directors can see teams within their organization
-        if ($currentUser->hasRole('Director')) {
+        if ($currentUser->hasRole(['Partner Director', 'Group Director'])) {
             $query->whereHas('creator', function ($q) use ($currentUser) {
                 $q->where('organization_id', $currentUser->organization_id);
             });
             return;
         }
 
-        // Other roles can only see teams they created or are members of
+        // Coordinators can see teams within their organization
+        if ($currentUser->hasRole('Coordinator')) {
+            $query->whereHas('creator', function ($q) use ($currentUser) {
+                $q->where('organization_id', $currentUser->organization_id);
+            });
+            return;
+        }
+
+        // Other roles (Sales Manager, Sales Agent) can see teams they created or are members of
         $query->where(function ($q) use ($currentUser) {
             $q->where('creator_id', $currentUser->id)
               ->orWhereHas('users', function ($userQuery) use ($currentUser) {

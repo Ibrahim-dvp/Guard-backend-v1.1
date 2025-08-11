@@ -25,7 +25,8 @@ class TeamPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('teams.view');
+        return $user->can('teams.view') || 
+               $user->hasRole(['Partner Director', 'Group Director', 'Sales Manager', 'Sales Agent', 'Coordinator']);
     }
 
     /**
@@ -56,10 +57,8 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRole('Partner Director')) {
-            return $user->organization_id === $team->creator->organization_id;
-        }
-        return $user->can('teams.create');
+        return $user->can('teams.create') || 
+               $user->hasRole(['Partner Director', 'Group Director', 'Sales Manager']);
     }
 
     /**
@@ -89,7 +88,7 @@ class TeamPolicy
      */
     public function delete(User $user, Team $team): bool
     {
-        if (!$user->can('teams.delete')) {
+        if (!$user->can('teams.delete') && !$user->hasRole(['Partner Director', 'Group Director'])) {
             return false;
         }
 
@@ -99,7 +98,7 @@ class TeamPolicy
         }
 
         // Directors can delete teams within their organization
-        if ($user->hasRole('Director')) {
+        if ($user->hasRole(['Partner Director', 'Group Director'])) {
             return $user->organization_id === $team->creator->organization_id;
         }
 
@@ -111,7 +110,7 @@ class TeamPolicy
      */
     public function manageMembers(User $user, Team $team): bool
     {
-        if (!$user->can('teams.manage_members')) {
+        if (!$user->can('teams.manage_members') && !$user->hasRole(['Partner Director', 'Group Director', 'Sales Manager'])) {
             return false;
         }
 
@@ -121,7 +120,7 @@ class TeamPolicy
         }
 
         // Directors can manage members of teams within their organization
-        if ($user->hasRole('Director')) {
+        if ($user->hasRole(['Partner Director', 'Group Director'])) {
             return $user->organization_id === $team->creator->organization_id;
         }
 

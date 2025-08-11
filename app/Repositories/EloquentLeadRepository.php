@@ -68,8 +68,11 @@ class EloquentLeadRepository implements LeadRepositoryInterface
         }
 
         if ($currentUser->hasRole('Sales Manager')) {
-            // Sales Managers only see leads specifically assigned to them by coordinators
-            $query->where('assigned_to_id', $currentUser->id);
+            // Sales Managers see leads assigned to them OR leads they assigned to others
+            $query->where(function (Builder $q) use ($currentUser) {
+                $q->where('assigned_to_id', $currentUser->id)     // Leads assigned to them
+                  ->orWhere('assigned_by_id', $currentUser->id);  // Leads they assigned to others
+            });
         }
 
         if ($currentUser->hasRole('Partner Director')) {
