@@ -14,7 +14,7 @@ class EloquentLeadRepository implements LeadRepositoryInterface
 {
     public function getAll(User $currentUser, array $filters): LengthAwarePaginator
     {
-        $query = Lead::with(relations: ['referral', 'assignedTo', 'assignedBy', 'organization'])->where('referral_id', $currentUser->id);
+        $query = Lead::with(relations: ['referral', 'assignedTo', 'assignedBy', 'organization']);
 
         $this->applyRoleBasedFilters($query, $currentUser);
         $this->applyFrontendFilters($query, $filters);
@@ -63,19 +63,22 @@ class EloquentLeadRepository implements LeadRepositoryInterface
     private function applyRoleBasedFilters(Builder $query, User $currentUser): void
     {
         if ($currentUser->hasRole('Sales Agent')) {
+            // Sales Agents only see leads assigned to them
             $query->where('assigned_to_id', $currentUser->id);
         }
 
         if ($currentUser->hasRole('Sales Manager')) {
-            $query->where(function (Builder $q) use ($currentUser) {
-                $q->where('assigned_to_id', $currentUser->id) // Leads assigned to the manager
-                    ->orWhereIn('assigned_to_id', function ($subQuery) use ($currentUser) {
-                        $subQuery->select('id')->from('users')->where('created_by', $currentUser->id);
-                    }); // Or leads assigned to their team members
-            });
+            // Sales Managers only see leads specifically assigned to them by coordinators
+            $query->where('assigned_to_id', $currentUser->id);
         }
 
         if ($currentUser->hasRole('Partner Director')) {
+            // Partner Directors see all leads in their organization
+            $query->where('organization_id', $currentUser->organization_id);
+        }
+
+        if ($currentUser->hasRole('Coordinator')) {
+            // Coordinators see all leads in their organization (for assignment purposes)
             $query->where('organization_id', $currentUser->organization_id);
         }
     }

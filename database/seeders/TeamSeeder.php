@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Team;
 use App\Models\User;
+use App\Models\Organization;
 use Illuminate\Database\Seeder;
 
 class TeamSeeder extends Seeder
@@ -13,56 +14,55 @@ class TeamSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get users by roles for team creation
-        $director = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Partner Director');
-        })->first();
+        // Get organizations
+        $protectaGroup = Organization::where('name', 'Protecta Group')->first();
+        $intelligentb2b = Organization::where('name', 'Intelligentb2b')->first();
 
-        $salesManager = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Sales Manager');
-        })->first();
+        // Get specific users from Protecta Group organization
+        $protectaDirector = User::where('email', 'director@protecta.com')->first();
+        $partnerDirector = User::where('email', 'partner@example.com')->first();
+        $coordinator = User::where('email', 'coordinator@guard.com')->first();
+        $salesManager1 = User::where('email', 'manager1@guard.com')->first();
+        $salesManager2 = User::where('email', 'manager2@guard.com')->first();
+        $salesAgent1 = User::where('email', 'agent1@guard.com')->first();
+        $salesAgent2 = User::where('email', 'agent2@guard.com')->first();
+        $salesAgent3 = User::where('email', 'agent3@guard.com')->first();
+        $salesAgent4 = User::where('email', 'agent4@guard.com')->first();
 
-        $salesAgents = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Sales Agent');
-        })->get();
+        // Get specific users from Intelligentb2b organization
+        $techDirector = User::where('email', 'tech.director@intelligentb2b.com')->first();
+        $techManager = User::where('email', 'tech.manager@intelligentb2b.com')->first();
+        $techAgent = User::where('email', 'tech.agent@intelligentb2b.com')->first();
 
-        $coordinator = User::whereHas('roles', function ($query) {
-            $query->where('name', 'Coordinator');
-        })->first();
-
-        // Create teams with realistic scenarios
-        $teams = [
+        // Create teams for Protecta Group
+        $protectaTeams = [
             [
-                'name' => 'Sales Team Alpha',
+                'name' => 'Enterprise Sales Team',
                 'description' => 'Primary sales team focusing on enterprise clients',
-                'slug' => 'sales-team-alpha',
-                'creator' => $director,
-                'members' => [$salesManager, $salesAgents->first()]
+                'slug' => 'enterprise-sales-team',
+                'creator' => $partnerDirector,
+                'manager' => $salesManager1,
+                'agents' => [$salesAgent1, $salesAgent2]
             ],
             [
-                'name' => 'Sales Team Beta',
-                'description' => 'Secondary sales team for mid-market clients',
-                'slug' => 'sales-team-beta',
-                'creator' => $director,
-                'members' => [$salesAgents->skip(1)->first()]
+                'name' => 'Mid-Market Sales Team',
+                'description' => 'Sales team targeting mid-market opportunities',
+                'slug' => 'mid-market-sales-team',
+                'creator' => $partnerDirector,
+                'manager' => $salesManager2,
+                'agents' => [$salesAgent3, $salesAgent4]
             ],
             [
                 'name' => 'Lead Management Team',
                 'description' => 'Team responsible for lead qualification and distribution',
                 'slug' => 'lead-management-team',
-                'creator' => $salesManager,
-                'members' => [$coordinator, $salesAgents->first()]
-            ],
-            [
-                'name' => 'Customer Success Team',
-                'description' => 'Team focused on customer retention and upselling',
-                'slug' => 'customer-success-team',
-                'creator' => $salesManager,
-                'members' => $salesAgents->take(2)->toArray()
+                'creator' => $protectaDirector,
+                'manager' => $salesManager1,
+                'agents' => [$coordinator, $salesAgent1]
             ]
         ];
 
-        foreach ($teams as $teamData) {
+        foreach ($protectaTeams as $teamData) {
             if ($teamData['creator']) {
                 $team = Team::create([
                     'name' => $teamData['name'],
@@ -71,49 +71,69 @@ class TeamSeeder extends Seeder
                     'creator_id' => $teamData['creator']->id,
                 ]);
 
-                // Add members to the team
-                if (!empty($teamData['members'])) {
-                    $memberIds = collect($teamData['members'])
-                        ->filter() // Remove null values
-                        ->pluck('id')
-                        ->toArray();
-                    
-                    if (!empty($memberIds)) {
-                        $team->users()->attach($memberIds);
+                // Add manager and agents to the team
+                $members = [];
+                if ($teamData['manager']) {
+                    $members[] = $teamData['manager']->id;
+                }
+                if (!empty($teamData['agents'])) {
+                    foreach ($teamData['agents'] as $agent) {
+                        if ($agent) {
+                            $members[] = $agent->id;
+                        }
                     }
                 }
 
-                $this->command->info("Created team: {$team->name} with " . count($teamData['members']) . " members");
-            }
-        }
-
-        // Create additional teams using factories for more test data
-        $additionalUsers = User::whereHas('roles', function ($query) {
-            $query->whereIn('name', ['Sales Manager', 'Partner Director']);
-        })->get();
-
-        foreach ($additionalUsers as $user) {
-            // Create 1-2 additional teams per manager/director
-            $teamCount = rand(1, 2);
-            
-            for ($i = 0; $i < $teamCount; $i++) {
-                $team = Team::factory()
-                    ->createdBy($user)
-                    ->create();
-
-                // Add random team members from the same organization
-                $potentialMembers = User::where('organization_id', $user->organization_id)
-                    ->where('id', '!=', $user->id)
-                    ->inRandomOrder()
-                    ->limit(rand(2, 4))
-                    ->get();
-
-                if ($potentialMembers->isNotEmpty()) {
-                    $team->users()->attach($potentialMembers->pluck('id'));
+                if (!empty($members)) {
+                    $team->users()->attach($members);
                 }
 
-                $this->command->info("Created additional team: {$team->name}");
+                $this->command->info("✅ Created team: {$team->name} with " . count($members) . " members");
             }
         }
+
+        // Create teams for Intelligentb2b
+        if ($techDirector && $techManager && $techAgent) {
+            $intelligentTeams = [
+                [
+                    'name' => 'Tech Solutions Team',
+                    'description' => 'Technology-focused sales and support team',
+                    'slug' => 'tech-solutions-team',
+                    'creator' => $techDirector,
+                    'manager' => $techManager,
+                    'agents' => [$techAgent]
+                ]
+            ];
+
+            foreach ($intelligentTeams as $teamData) {
+                $team = Team::create([
+                    'name' => $teamData['name'],
+                    'description' => $teamData['description'],
+                    'slug' => $teamData['slug'],
+                    'creator_id' => $teamData['creator']->id,
+                ]);
+
+                // Add manager and agents to the team
+                $members = [];
+                if ($teamData['manager']) {
+                    $members[] = $teamData['manager']->id;
+                }
+                if (!empty($teamData['agents'])) {
+                    foreach ($teamData['agents'] as $agent) {
+                        if ($agent) {
+                            $members[] = $agent->id;
+                        }
+                    }
+                }
+
+                if (!empty($members)) {
+                    $team->users()->attach($members);
+                }
+
+                $this->command->info("✅ Created team: {$team->name} with " . count($members) . " members");
+            }
+        }
+
+        $this->command->info('👥 Teams created successfully with proper Sales Manager and Agent structure!');
     }
 }

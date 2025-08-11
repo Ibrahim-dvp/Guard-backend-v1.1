@@ -83,7 +83,7 @@ class RolesAndPermissionsSeeder extends Seeder
         Role::create(['name' => 'Referral'])->givePermissionTo([
             'organizations.view',
             'teams.view',
-            'leads.create','leads.assign',
+            'leads.create',
             'leads.view',
             'appointments.view'
         ]);

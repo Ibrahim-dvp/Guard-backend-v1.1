@@ -56,6 +56,9 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
+        if ($user->hasRole('Partner Director')) {
+            return $user->organization_id === $team->creator->organization_id;
+        }
         return $user->can('teams.create');
     }
 
