@@ -133,7 +133,7 @@ class EloquentTeamRepository implements TeamRepositoryInterface
                     $query->select(['id', 'name', 'parent_id']);
                 },
                 'users' => function ($query) {
-                    $query->select(['users.id', 'users.first_name', 'users.last_name', 'users.email', 'users.is_active']);
+                    $query->select(['users.id', 'users.first_name', 'users.last_name', 'users.email', 'users.is_active','users.created_at', 'users.updated_at']);
                 }
             ])
             ->withCount([
@@ -177,19 +177,8 @@ class EloquentTeamRepository implements TeamRepositoryInterface
      */
     private function applyRoleBasedFilters(Builder $query, User $currentUser): void
     {
-        // Super Admin can see all teams
-        if ($currentUser->hasRole(['Super Admin', 'Admin'])) {
-            return;
-        }
-
-        // Group Directors can see all teams in their organization hierarchy
-        if ($currentUser->hasRole('Group Director')) {
-            $query->where(function ($q) use ($currentUser) {
-                $q->where('organization_id', $currentUser->organization_id)
-                  ->orWhereHas('organization', function ($orgQuery) use ($currentUser) {
-                      $orgQuery->where('parent_id', $currentUser->organization_id);
-                  });
-            });
+        // Admin and Group Director can see all teams
+        if ($currentUser->hasRole(['Admin', 'Group Director'])) {
             return;
         }
 

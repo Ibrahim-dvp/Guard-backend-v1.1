@@ -18,7 +18,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
      */
     public function getAppointments(User $currentUser, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = Appointment::with(['lead', 'scheduledBy', 'scheduledWith']);
+        $query = Appointment::with(['lead', 'scheduledBy']);
 
         // Apply role-based filtering
         $this->applyRoleBasedFiltering($query, $currentUser);
@@ -34,7 +34,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
      */
     public function getAppointmentById(string $id): ?Appointment
     {
-        return Appointment::with(['lead', 'scheduledBy', 'scheduledWith'])->find($id);
+        return Appointment::with(['lead', 'scheduledBy'])->find($id);
     }
 
     /**
@@ -43,7 +43,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
     public function createAppointment(array $data): Appointment
     {
         $appointment = Appointment::create($data);
-        return $appointment->load(['lead', 'scheduledBy', 'scheduledWith']);
+        return $appointment->load(['lead', 'scheduledBy']);
     }
 
     /**
@@ -52,7 +52,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
     public function updateAppointment(Appointment $appointment, array $data): Appointment
     {
         $appointment->update($data);
-        return $appointment->load(['lead', 'scheduledBy', 'scheduledWith']);
+        return $appointment->load(['lead', 'scheduledBy']);
     }
 
     /**
@@ -68,10 +68,9 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
      */
     public function getUserAppointments(string $userId, array $filters = []): Collection
     {
-        $query = Appointment::with(['lead', 'scheduledBy', 'scheduledWith'])
+        $query = Appointment::with(['lead', 'scheduledBy'])
             ->where(function ($q) use ($userId) {
-                $q->where('scheduled_by', $userId)
-                  ->orWhere('scheduled_with', $userId);
+                $q->where('scheduled_by', $userId);
             });
 
         $this->applyFilters($query, $filters);
@@ -84,7 +83,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
      */
     public function getLeadAppointments(string $leadId): Collection
     {
-        return Appointment::with(['scheduledBy', 'scheduledWith'])
+        return Appointment::with(['scheduledBy'])
             ->where('lead_id', $leadId)
             ->orderBy('scheduled_at', 'desc')
             ->get();
@@ -97,10 +96,9 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
     {
         $endDate = Carbon::now()->addDays($days);
 
-        return Appointment::with(['lead', 'scheduledBy', 'scheduledWith'])
+        return Appointment::with(['lead', 'scheduledBy'])
             ->where(function ($q) use ($userId) {
-                $q->where('scheduled_by', $userId)
-                  ->orWhere('scheduled_with', $userId);
+                $q->where('scheduled_by', $userId);
             })
             ->where('scheduled_at', '>=', Carbon::now())
             ->where('scheduled_at', '<=', $endDate)
@@ -114,7 +112,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
      */
     public function getAppointmentsByStatus(string $status, User $currentUser): Collection
     {
-        $query = Appointment::with(['lead', 'scheduledBy', 'scheduledWith'])
+        $query = Appointment::with(['lead', 'scheduledBy'])
             ->where('status', $status);
 
         $this->applyRoleBasedFiltering($query, $currentUser);
@@ -132,8 +130,8 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
             return true;
         }
 
-        // User can access appointments they scheduled or are scheduled with
-        if ($appointment->scheduled_by === $user->id || $appointment->scheduled_with === $user->id) {
+        // User can access appointments they scheduled
+        if ($appointment->scheduled_by === $user->id) {
             return true;
         }
 
@@ -152,12 +150,8 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
             }
 
             $userTeams = $user->teams()->pluck('id');
-            $scheduledWithUser = User::find($appointment->scheduled_with);
             $scheduledByUser = User::find($appointment->scheduled_by);
-            
-            if ($scheduledWithUser && $scheduledWithUser->teams()->whereIn('team_id', $userTeams)->exists()) {
-                return true;
-            }
+       
             
             if ($scheduledByUser && $scheduledByUser->teams()->whereIn('team_id', $userTeams)->exists()) {
                 return true;
@@ -183,7 +177,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
      */
     public function getAppointmentsInDateRange(string $startDate, string $endDate, User $currentUser): Collection
     {
-        $query = Appointment::with(['lead', 'scheduledBy', 'scheduledWith'])
+        $query = Appointment::with(['lead', 'scheduledBy'])
             ->whereBetween('scheduled_at', [$startDate, $endDate]);
 
         $this->applyRoleBasedFiltering($query, $currentUser);
@@ -200,8 +194,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
         $endTime = $startTime->copy()->addMinutes($duration);
 
         $query = Appointment::where(function ($q) use ($userId) {
-                $q->where('scheduled_by', $userId)
-                  ->orWhere('scheduled_with', $userId);
+                $q->where('scheduled_by', $userId);
             })
             ->whereNotIn('status', ['cancelled', 'completed'])
             ->where(function ($q) use ($startTime, $endTime) {
@@ -216,7 +209,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
             $query->where('id', '!=', $excludeAppointmentId);
         }
 
-        return $query->with(['lead', 'scheduledBy', 'scheduledWith'])->get();
+        return $query->with(['lead', 'scheduledBy'])->get();
     }
 
     /**
@@ -242,11 +235,7 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
                     $leadQuery->where('organization_id', $currentUser->organization_id);
                 })
                 ->orWhere('scheduled_by', $currentUser->id)
-                ->orWhere('scheduled_with', $currentUser->id)
                 ->orWhereHas('scheduledBy.teams', function($teamQuery) use ($userTeams) {
-                    $teamQuery->whereIn('team_id', $userTeams);
-                })
-                ->orWhereHas('scheduledWith.teams', function($teamQuery) use ($userTeams) {
                     $teamQuery->whereIn('team_id', $userTeams);
                 });
             });
@@ -259,7 +248,6 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
             // Sales Agents and others see only their own appointments
             $query->where(function($q) use ($currentUser) {
                 $q->where('scheduled_by', $currentUser->id)
-                  ->orWhere('scheduled_with', $currentUser->id)
                   ->orWhereHas('lead', function($leadQuery) use ($currentUser) {
                       $leadQuery->where('assigned_to_id', $currentUser->id);
                   });
@@ -282,10 +270,6 @@ class EloquentAppointmentRepository implements AppointmentRepositoryInterface
 
         if (isset($filters['scheduled_by'])) {
             $query->where('scheduled_by', $filters['scheduled_by']);
-        }
-
-        if (isset($filters['scheduled_with'])) {
-            $query->where('scheduled_with', $filters['scheduled_with']);
         }
 
         if (isset($filters['start_date'])) {

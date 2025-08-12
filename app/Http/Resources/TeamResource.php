@@ -21,10 +21,16 @@ class TeamResource extends JsonResource
             'slug' => $this->slug,
             'creator' => new UserResource($this->whenLoaded('creator')),
             'creator_id' => $this->creator_id,
+            'organization' => new OrganizationResource($this->whenLoaded('organization')),
+            'organization_id' => $this->organization_id,
             'users' => UserResource::collection($this->whenLoaded('users')),
             'users_count' => $this->when(
                 $this->relationLoaded('users'),
                 fn () => $this->users->count()
+            ),
+            'active_users_count' => $this->when(
+                isset($this->active_users_count),
+                fn () => $this->active_users_count
             ),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),

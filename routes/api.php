@@ -40,11 +40,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'middleware' => 'auth:sanctum
     Route::get('organizations/{organizationId}/teams', [TeamController::class, 'getByOrganization'])->name('organizations.teams');
 
     // Appointment specific routes
+    Route::patch('appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])->name('appointments.updateStatus');
     Route::patch('appointments/{appointment}/reschedule', [AppointmentController::class, 'reschedule'])->name('appointments.reschedule');
-    Route::patch('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
-    Route::patch('appointments/{appointment}/complete', [AppointmentController::class, 'markCompleted'])->name('appointments.complete');
-    Route::patch('appointments/{appointment}/confirm', [AppointmentController::class, 'confirm'])->name('appointments.confirm');
-    Route::patch('appointments/{appointment}/no-show', [AppointmentController::class, 'markNoShow'])->name('appointments.noShow');
     Route::get('appointments/upcoming', [AppointmentController::class, 'upcoming'])->name('appointments.upcoming');
     Route::get('appointments/status/{status}', [AppointmentController::class, 'byStatus'])->name('appointments.byStatus');
     Route::get('appointments/statistics', [AppointmentController::class, 'statistics'])->name('appointments.statistics');

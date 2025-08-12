@@ -28,12 +28,6 @@ class StoreAppointmentRequest extends FormRequest
                 'uuid',
                 'exists:leads,id'
             ],
-            'scheduled_with' => [
-                'required',
-                'uuid',
-                'exists:users,id',
-                'different:scheduled_by'
-            ],
             'scheduled_at' => [
                 'required',
                 'date',
@@ -69,9 +63,6 @@ class StoreAppointmentRequest extends FormRequest
         return [
             'lead_id.required' => 'Please select a lead for this appointment.',
             'lead_id.exists' => 'The selected lead does not exist.',
-            'scheduled_with.required' => 'Please select who the appointment is with.',
-            'scheduled_with.exists' => 'The selected user does not exist.',
-            'scheduled_with.different' => 'You cannot schedule an appointment with yourself.',
             'scheduled_at.required' => 'Please specify when the appointment is scheduled.',
             'scheduled_at.after' => 'Appointment cannot be scheduled in the past.',
             'duration.min' => 'Appointment duration must be at least 15 minutes.',

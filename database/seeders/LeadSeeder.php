@@ -33,61 +33,51 @@ class LeadSeeder extends Seeder
         // Create sample leads with different statuses
         $leadTemplates = [
             [
-                'client_info' => [
-                    'firstName' => 'John',
-                    'lastName' => 'Smith',
-                    'email' => 'john.smith@example.com',
-                    'phone' => '+1-555-0123',
-                    'company' => 'ABC Corporation'
-                ],
+                'client_first_name' => 'John',
+                'client_last_name' => 'Smith',
+                'client_email' => 'john.smith@example.com',
+                'client_phone' => '+1-555-0123',
+                'client_company' => 'ABC Corporation',
                 'source' => 'Website Contact Form',
                 'status' => LeadStatus::NEW,
                 'revenue' => 0.00
             ],
             [
-                'client_info' => [
-                    'firstName' => 'Sarah',
-                    'lastName' => 'Johnson',
-                    'email' => 'sarah.johnson@techcorp.com',
-                    'phone' => '+1-555-0124',
-                    'company' => 'TechCorp Inc'
-                ],
+                'client_first_name' => 'Sarah',
+                'client_last_name' => 'Johnson',
+                'client_email' => 'sarah.johnson@techcorp.com',
+                'client_phone' => '+1-555-0124',
+                'client_company' => 'TechCorp Inc',
                 'source' => 'LinkedIn',
                 'status' => LeadStatus::ASSIGNED_TO_MANAGER,
                 'revenue' => 15000
             ],
             [
-                'client_info' => [
-                    'firstName' => 'Michael',
-                    'lastName' => 'Brown',
-                    'email' => 'michael.brown@startup.io',
-                    'phone' => '+1-555-0125',
-                    'company' => 'Startup Solutions'
-                ],
+                'client_first_name' => 'Michael',
+                'client_last_name' => 'Brown',
+                'client_email' => 'michael.brown@startup.io',
+                'client_phone' => '+1-555-0125',
+                'client_company' => 'Startup Solutions',
                 'source' => 'Referral',
                 'status' => LeadStatus::ASSIGNED_TO_AGENT,
                 'revenue' => 8500
             ],
             [
-                'client_info' => [
-                    'firstName' => 'Emily',
-                    'lastName' => 'Davis',
-                    'email' => 'emily.davis@bigcompany.com',
-                    'phone' => '+1-555-0126',
-                    'company' => 'Big Company Ltd'
-                ],
+                'client_first_name' => 'Emily',
+                'client_last_name' => 'Davis',
+                'client_email' => 'emily.davis@bigcompany.com',
+                'client_phone' => '+1-555-0126',
+                'client_company' => 'Big Company Ltd',
                 'source' => 'Trade Show',
                 'status' => LeadStatus::QUALIFIED,
                 'revenue' => 25000
             ],
             [
-                'client_info' => [
-                    'firstName' => 'Robert',
-                    'lastName' => 'Wilson',
-                    'email' => 'robert.wilson@enterprise.com',
-                    'phone' => '+1-555-0127',
-                    'company' => 'Enterprise Solutions'
-                ],
+                'client_first_name' => 'Robert',
+                'client_last_name' => 'Wilson',
+                'client_email' => 'robert.wilson@enterprise.com',
+                'client_phone' => '+1-555-0127',
+                'client_company' => 'Enterprise Solutions',
                 'source' => 'Cold Call',
                 'status' => LeadStatus::CONVERTED,
                 'revenue' => 45000
@@ -99,7 +89,11 @@ class LeadSeeder extends Seeder
             $referral = $referralUsers->random();
             
             $leadData = [
-                'client_info' => $template['client_info'],
+                'client_first_name' => $template['client_first_name'],
+                'client_last_name' => $template['client_last_name'],
+                'client_email' => $template['client_email'],
+                'client_phone' => $template['client_phone'],
+                'client_company' => $template['client_company'],
                 'source' => $template['source'],
                 'status' => $template['status'],
                 'revenue' => $template['revenue'],
@@ -135,7 +129,7 @@ class LeadSeeder extends Seeder
             }
 
             $lead = Lead::create($leadData);
-            $this->command->info("Created lead: {$lead->client_info['firstName']} {$lead->client_info['lastName']} - Status: {$lead->status->value}");
+            $this->command->info("Created lead: {$lead->client_first_name} {$lead->client_last_name} - Status: {$lead->status->value}");
         }
 
         // Create additional random leads for testing
@@ -155,13 +149,11 @@ class LeadSeeder extends Seeder
             ])->random();
 
             $leadData = [
-                'client_info' => [
-                    'firstName' => fake()->firstName(),
-                    'lastName' => fake()->lastName(),
-                    'email' => fake()->unique()->safeEmail(),
-                    'phone' => fake()->phoneNumber(),
-                    'company' => fake()->company()
-                ],
+                'client_first_name' => fake()->firstName(),
+                'client_last_name' => fake()->lastName(),
+                'client_email' => fake()->unique()->safeEmail(),
+                'client_phone' => fake()->phoneNumber(),
+                'client_company' => fake()->company(),
                 'source' => fake()->randomElement([
                     'Website', 'LinkedIn', 'Referral', 'Cold Call', 
                     'Trade Show', 'Email Campaign', 'Social Media'

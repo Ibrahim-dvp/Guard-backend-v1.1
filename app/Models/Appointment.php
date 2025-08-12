@@ -14,7 +14,6 @@ class Appointment extends Model
     protected $fillable = [
         'lead_id',
         'scheduled_by',
-        'scheduled_with',
         'scheduled_at',
         'duration',
         'location',
@@ -34,10 +33,5 @@ class Appointment extends Model
     public function scheduledBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'scheduled_by');
-    }
-
-    public function scheduledWith(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'scheduled_with');
     }
 }

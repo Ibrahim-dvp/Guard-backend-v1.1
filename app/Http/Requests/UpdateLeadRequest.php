@@ -22,9 +22,13 @@ class UpdateLeadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_info' => ['sometimes', 'array'],
+            'client_first_name' => ['sometimes', 'string', 'max:255'],
+            'client_last_name' => ['sometimes', 'string', 'max:255'],
+            'client_email' => ['sometimes', 'email', 'max:255'],
+            'client_phone' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'client_company' => ['sometimes', 'nullable', 'string', 'max:255'],
             'source' => ['sometimes', 'string', 'max:255'],
-            'revenue' => ['sometimes', 'numeric'],
+            'revenue' => ['sometimes', 'numeric', 'min:0'],
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use App\Http\Requests\UpdateAppointmentStatusRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\SuccessResource;
 use App\Models\Appointment;
@@ -25,7 +26,7 @@ class AppointmentController extends Controller
         $this->authorize('viewAny', Appointment::class);
         
         $filters = $request->only([
-            'status', 'lead_id', 'scheduled_by', 'scheduled_with', 
+            'status', 'lead_id', 'scheduled_by', 
             'start_date', 'end_date', 'search'
         ]);
         
@@ -208,6 +209,27 @@ class AppointmentController extends Controller
         return new SuccessResource(
             new AppointmentResource($updatedAppointment),
             'Appointment marked as no show.'
+        );
+    }
+
+    /**
+     * Update appointment status.
+     */
+    public function updateStatus(UpdateAppointmentStatusRequest $request, Appointment $appointment)
+    {
+        $this->authorize('update', $appointment);
+        
+        $validatedData = $request->validated();
+        $updatedAppointment = $this->appointmentService->updateAppointmentStatus(
+            $appointment,
+            $validatedData['status'],
+            $validatedData['reason'] ?? null,
+            $validatedData['notes'] ?? null
+        );
+        
+        return new SuccessResource(
+            new AppointmentResource($updatedAppointment),
+            'Appointment status updated successfully.'
         );
     }
 

@@ -58,11 +58,6 @@ class AppointmentPolicy
             return true;
         }
 
-        // User can view appointments scheduled with them
-        if ($appointment->scheduled_with === $user->id) {
-            return true;
-        }
-
         // Partner Directors can view appointments within their organization
         if ($user->hasRole('Partner Director')) {
             $appointmentLeadOrganization = $appointment->lead->organization_id ?? null;
@@ -80,12 +75,9 @@ class AppointmentPolicy
 
             // Can view if appointment is with someone in their teams
             $userTeams = $user->teams()->pluck('id');
-            $scheduledWithUser = User::find($appointment->scheduled_with);
             $scheduledByUser = User::find($appointment->scheduled_by);
             
-            if ($scheduledWithUser && $scheduledWithUser->teams()->whereIn('team_id', $userTeams)->exists()) {
-                return true;
-            }
+       
             
             if ($scheduledByUser && $scheduledByUser->teams()->whereIn('team_id', $userTeams)->exists()) {
                 return true;
@@ -95,7 +87,7 @@ class AppointmentPolicy
         // Sales Agents can view appointments where they are involved or assigned to the lead
         if ($user->hasRole('Sales Agent')) {
             // Can view if they are the one scheduled or scheduling
-            if ($appointment->scheduled_by === $user->id || $appointment->scheduled_with === $user->id) {
+            if ($appointment->scheduled_by === $user->id ) {
                 return true;
             }
 
@@ -143,10 +135,6 @@ class AppointmentPolicy
             return true;
         }
 
-        // User can update appointments scheduled with them (to change status, add notes, etc.)
-        if ($appointment->scheduled_with === $user->id) {
-            return true;
-        }
 
         // Partner Directors can update appointments within their organization
         if ($user->hasRole('Partner Director')) {
@@ -157,12 +145,8 @@ class AppointmentPolicy
         // Sales Managers can update appointments of their team members
         if ($user->hasRole('Sales Manager')) {
             $userTeams = $user->teams()->pluck('id');
-            $scheduledWithUser = User::find($appointment->scheduled_with);
             $scheduledByUser = User::find($appointment->scheduled_by);
             
-            if ($scheduledWithUser && $scheduledWithUser->teams()->whereIn('team_id', $userTeams)->exists()) {
-                return true;
-            }
             
             if ($scheduledByUser && $scheduledByUser->teams()->whereIn('team_id', $userTeams)->exists()) {
                 return true;
@@ -246,7 +230,7 @@ class AppointmentPolicy
         }
 
         // Both participants can cancel the appointment
-        if ($appointment->scheduled_by === $user->id || $appointment->scheduled_with === $user->id) {
+        if ($appointment->scheduled_by === $user->id) {
             return true;
         }
 
@@ -260,7 +244,7 @@ class AppointmentPolicy
     public function markCompleted(User $user, Appointment $appointment): bool
     {
         // Only participants or managers can mark appointments as completed
-        if ($appointment->scheduled_by === $user->id || $appointment->scheduled_with === $user->id) {
+        if ($appointment->scheduled_by === $user->id) {
             return true;
         }
 

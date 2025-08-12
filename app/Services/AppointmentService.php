@@ -43,8 +43,6 @@ class AppointmentService
         // Validate appointment timing
         $this->validateAppointmentTiming($data, $scheduledBy);
 
-        // Check for conflicts
-        $this->checkForConflicts($data);
 
         $data['scheduled_by'] = $scheduledBy->id;
         $data['status'] = $data['status'] ?? 'scheduled';
@@ -150,6 +148,32 @@ class AppointmentService
     }
 
     /**
+     * Update appointment status with optional reason and notes.
+     */
+    public function updateAppointmentStatus(Appointment $appointment, string $status, ?string $reason = null, ?string $notes = null): Appointment
+    {
+        $data = ['status' => $status];
+        
+        if ($reason !== null) {
+            // If we want to store reason separately, we'd need to add a reason field to the appointments table
+            // For now, we can append it to the notes
+            $existingNotes = $appointment->notes;
+            $reasonNote = "Status changed to {$status}. Reason: {$reason}";
+            $data['notes'] = $existingNotes ? $existingNotes . "\n\n" . $reasonNote : $reasonNote;
+        }
+        
+        if ($notes !== null) {
+            if (isset($data['notes'])) {
+                $data['notes'] .= "\n\nAdditional notes: {$notes}";
+            } else {
+                $data['notes'] = $notes;
+            }
+        }
+
+        return $this->updateAppointment($appointment, $data);
+    }
+
+    /**
      * Get user appointments.
      */
     public function getUserAppointments(string $userId, array $filters = []): Collection
@@ -202,7 +226,7 @@ class AppointmentService
             $endOfDay->toDateTimeString(),
             User::find($userId)
         )->where(function($appointment) use ($userId) {
-            return $appointment->scheduled_by === $userId || $appointment->scheduled_with === $userId;
+            return $appointment->scheduled_by === $userId;
         });
     }
 
@@ -219,7 +243,7 @@ class AppointmentService
             $endOfWeek->toDateTimeString(),
             User::find($userId)
         )->where(function($appointment) use ($userId) {
-            return $appointment->scheduled_by === $userId || $appointment->scheduled_with === $userId;
+            return $appointment->scheduled_by === $userId;
         });
     }
 
@@ -319,47 +343,5 @@ class AppointmentService
         }
     }
 
-    /**
-     * Check for appointment conflicts.
-     */
-    private function checkForConflicts(array $data, ?string $excludeAppointmentId = null): void
-    {
-        if (!isset($data['scheduled_at']) || !isset($data['scheduled_with'])) {
-            return;
-        }
-
-        $duration = $data['duration'] ?? 60;
-        $scheduledBy = $data['scheduled_by'] ?? null;
-        $scheduledWith = $data['scheduled_with'];
-
-        // Check conflicts for scheduled_with user
-        $conflicts = $this->appointmentRepository->getAppointmentConflicts(
-            $scheduledWith,
-            $data['scheduled_at'],
-            $duration,
-            $excludeAppointmentId
-        );
-
-        if ($conflicts->isNotEmpty()) {
-            throw ValidationException::withMessages([
-                'scheduled_at' => 'The selected time conflicts with an existing appointment for the participant.'
-            ]);
-        }
-
-        // Check conflicts for scheduled_by user (if different)
-        if ($scheduledBy && $scheduledBy !== $scheduledWith) {
-            $conflicts = $this->appointmentRepository->getAppointmentConflicts(
-                $scheduledBy,
-                $data['scheduled_at'],
-                $duration,
-                $excludeAppointmentId
-            );
-
-            if ($conflicts->isNotEmpty()) {
-                throw ValidationException::withMessages([
-                    'scheduled_at' => 'The selected time conflicts with an existing appointment for you.'
-                ]);
-            }
-        }
-    }
+ 
 }

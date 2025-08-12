@@ -22,11 +22,13 @@ class StoreLeadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_info' => ['required', 'array'],
-            'client_info.firstName' => ['required', 'string', 'max:255'],
-            'client_info.lastName' => ['required', 'string', 'max:255'],
-            'client_info.email' => ['required', 'email'],
-            'source' => ['string', 'max:255'],
+            'client_first_name' => ['required', 'string', 'max:255'],
+            'client_last_name' => ['required', 'string', 'max:255'],
+            'client_email' => ['required', 'email', 'max:255'],
+            'client_phone' => ['nullable', 'string', 'max:20'],
+            'client_company' => ['nullable', 'string', 'max:255'],
+            'source' => ['nullable', 'string', 'max:255'],
+            'revenue' => ['nullable', 'numeric', 'min:0'],
         ];
     }
 }

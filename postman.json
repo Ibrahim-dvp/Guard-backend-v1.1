@@ -48,6 +48,21 @@
     {
       "key": "password",
       "value": "password123"
+    },
+    {
+      "key": "team_id",
+      "value": "",
+      "description": "Team ID for testing"
+    },
+    {
+      "key": "organization_id",
+      "value": "",
+      "description": "Organization ID for testing"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "description": "User ID for testing"
     }
   ],
   "auth": {
@@ -809,7 +824,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"client_info\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+1234567890\",\n    \"company\": \"Tech Corp\"\n  },\n  \"source\": \"Website\",\n  \"notes\": \"Interested in our premium package\",\n  \"priority\": \"high\"\n}",
+              "raw": "{\n  \"client_first_name\": \"John\",\n  \"client_last_name\": \"Doe\",\n  \"client_email\": \"john.doe@example.com\",\n  \"client_phone\": \"+1234567890\",\n  \"client_company\": \"Tech Corp\",\n  \"source\": \"Website\",\n  \"revenue\": 15000\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -830,7 +845,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"client_info\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe Updated\",\n    \"email\": \"john.updated@example.com\",\n    \"phone\": \"+1234567890\",\n    \"company\": \"Updated Tech Corp\"\n  },\n  \"source\": \"LinkedIn\",\n  \"notes\": \"Updated notes with new information\"\n}",
+              "raw": "{\n  \"client_first_name\": \"John\",\n  \"client_last_name\": \"Doe Updated\",\n  \"client_email\": \"john.updated@example.com\",\n  \"client_phone\": \"+1234567890\",\n  \"client_company\": \"Updated Tech Corp\",\n  \"source\": \"LinkedIn\",\n  \"revenue\": 25000\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -875,7 +890,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"assignee_id\": \"{{manager_user_id}}\",\n  \"notes\": \"Assigning to sales manager for review\"\n}",
+              "raw": "{\n  \"assignedTo\": \"{{manager_user_id}}\",\n  \"notes\": \"Assigning to sales manager for review\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -902,7 +917,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"assignee_id\": \"{{agent_user_id}}\",\n  \"notes\": \"Assigning to sales agent for follow-up\"\n}",
+              "raw": "{\n  \"assignedTo\": \"{{agent_user_id}}\",\n  \"notes\": \"Assigning to sales agent for follow-up\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1124,7 +1139,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"lead_id\": \"{{lead_id}}\",\n  \"scheduled_with\": \"{{agent_user_id}}\",\n  \"scheduled_at\": \"2025-08-15T14:00:00Z\",\n  \"duration\": 60,\n  \"location\": \"Online - Zoom\",\n  \"notes\": \"Initial consultation meeting\",\n  \"status\": \"scheduled\"\n}",
+              "raw": "{\n  \"lead_id\": \"{{lead_id}}\",\n  \"scheduled_at\": \"2025-08-15T14:00:00Z\",\n  \"duration\": 60,\n  \"location\": \"Online - Zoom\",\n  \"notes\": \"Initial consultation meeting\",\n  \"status\": \"scheduled\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1403,6 +1418,218 @@
                 {
                   "key": "week_start",
                   "value": "2025-08-11"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Teams Management",
+      "item": [
+        {
+          "name": "Get All Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "sort_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "desc"
+                },
+                {
+                  "key": "organization_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Team Alpha\",\n  \"description\": \"Primary sales team for North region\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"slug\": \"sales-team-alpha\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams"]
+            }
+          }
+        },
+        {
+          "name": "Get Team by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Team Alpha - Updated\",\n  \"description\": \"Updated description for primary sales team\",\n  \"organization_id\": \"{{organization_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Add User to Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}", "users"]
+            }
+          }
+        },
+        {
+          "name": "Remove User from Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Team Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}", "teams"]
+            }
+          }
+        },
+        {
+          "name": "Get My Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/my-teams",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "my-teams"]
+            }
+          }
+        },
+        {
+          "name": "Get Teams by Organization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "organizations", "{{organization_id}}", "teams"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "sort_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "desc"
                 }
               ]
             }

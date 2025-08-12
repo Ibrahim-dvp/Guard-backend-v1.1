@@ -97,11 +97,7 @@ class EloquentLeadRepository implements LeadRepositoryInterface
         }
 
         if (isset($filters['search'])) {
-            $query->where(function (Builder $q) use ($filters) {
-                $q->where('client_info->firstName', 'like', "%{$filters['search']}%")
-                    ->orWhere('client_info->lastName', 'like', "%{$filters['search']}%")
-                    ->orWhere('client_info->email', 'like', "%{$filters['search']}%");
-            });
+            $query->searchClient($filters['search']);
         }
 
         if (isset($filters['sortField'])) {

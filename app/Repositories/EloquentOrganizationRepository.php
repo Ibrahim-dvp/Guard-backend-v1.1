@@ -22,6 +22,9 @@ class EloquentOrganizationRepository implements OrganizationRepositoryInterface
                     },
                     'parent' => function ($query) {
                         $query->select(['id', 'name']);
+                    },
+                    'teams' => function ($query) {
+                        $query->select(['id', 'name', 'slug', 'organization_id', 'creator_id']);
                     }
                 ])
                 ->get();
@@ -36,6 +39,9 @@ class EloquentOrganizationRepository implements OrganizationRepositoryInterface
                     },
                     'parent' => function ($query) {
                         $query->select(['id', 'name']);
+                    },
+                    'teams' => function ($query) {
+                        $query->select(['id', 'name', 'slug', 'organization_id', 'creator_id']);
                     }
                 ])
                 ->find($currentUser->organization_id);
@@ -58,6 +64,9 @@ class EloquentOrganizationRepository implements OrganizationRepositoryInterface
                 },
                 'children' => function ($query) {
                     $query->select(['id', 'name', 'parent_id']);
+                },
+                'teams' => function ($query) {
+                    $query->select(['id', 'name', 'slug', 'organization_id', 'creator_id']);
                 }
             ])
             ->find($id);
@@ -77,6 +86,9 @@ class EloquentOrganizationRepository implements OrganizationRepositoryInterface
             },
             'parent' => function ($query) {
                 $query->select(['id', 'name']);
+            },
+            'teams' => function ($query) {
+                $query->select(['id', 'name', 'slug', 'organization_id', 'creator_id']);
             }
         ]);
     }

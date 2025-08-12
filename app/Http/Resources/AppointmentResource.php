@@ -21,8 +21,8 @@ class AppointmentResource extends JsonResource
             'location' => $this->location,
             'notes' => $this->notes,
             'status' => $this->status,
+            'lead' => new LeadResource($this->whenLoaded('lead')),
             'scheduled_by' => new UserResource($this->whenLoaded('scheduledBy')),
-            'scheduled_with' => new UserResource($this->whenLoaded('scheduledWith')),
             'created_at' => $this->created_at?->toDateTimeString(),
         ];
     }

@@ -37,18 +37,35 @@ class TeamService
         // Set the creator
         $details['creator_id'] = $user->id;
         
-        // Auto-assign organization based on user's role and organization
-        if (!isset($details['organization_id'])) {
-            if ($user->organization_id) {
-                $details['organization_id'] = $user->organization_id;
-            } else {
+        // Handle organization assignment based on user role
+        if ($user->hasRole(['Admin', 'Group Director'])) {
+            // Admin/Group Director: Can specify any organization_id or use their own if not provided
+            if (!isset($details['organization_id'])) {
+                if ($user->organization_id) {
+                    $details['organization_id'] = $user->organization_id;
+                } else {
+                    throw ValidationException::withMessages([
+                        'organization_id' => 'Teams must be associated with an organization.',
+                    ]);
+                }
+            }
+            // No additional validation needed - they can create teams in any organization
+        } elseif ($user->hasRole('Partner Director')) {
+            // Partner Director: Always use their own organization, ignore any provided organization_id
+            $details['organization_id'] = $user->organization_id;
+            if (!$user->organization_id) {
                 throw ValidationException::withMessages([
-                    'organization_id' => 'Teams must be associated with an organization.',
+                    'organization_id' => 'Partner Directors must be associated with an organization to create teams.',
                 ]);
             }
         } else {
-            // Validate user can create teams in the specified organization
-            $this->validateOrganizationAccess($user, $details['organization_id']);
+            // Other roles: Use their own organization
+            $details['organization_id'] = $user->organization_id;
+            if (!$user->organization_id) {
+                throw ValidationException::withMessages([
+                    'organization_id' => 'You must be associated with an organization to create teams.',
+                ]);
+            }
         }
         
         // Generate slug from name if not provided
@@ -77,10 +94,13 @@ class TeamService
         if (isset($details['name']) && (!isset($details['slug']) || empty($details['slug']))) {
             $newSlug = Str::slug($details['name']);
             
-            // Ensure slug uniqueness (excluding current team)
+            // Ensure slug uniqueness within the organization (excluding current team)
             $counter = 1;
             $originalSlug = $newSlug;
-            while (Team::where('slug', $newSlug)->where('id', '!=', $team->id)->exists()) {
+            while (Team::where('slug', $newSlug)
+                      ->where('organization_id', $team->organization_id)
+                      ->where('id', '!=', $team->id)
+                      ->exists()) {
                 $newSlug = $originalSlug . '-' . $counter;
                 $counter++;
             }
@@ -181,22 +201,9 @@ class TeamService
      */
     private function validateOrganizationAccess(User $user, string $organizationId): void
     {
-        // Super Admin can access any organization
-        if ($user->hasRole(['Admin'])) {
+        // Admin and Group Director can access any organization
+        if ($user->hasRole(['Admin', 'Group Director'])) {
             return;
-        }
-
-        // Group Directors can access their organization and child organizations
-        if ($user->hasRole('Group Director')) {
-            if ($user->organization_id === $organizationId) {
-                return;
-            }
-            
-            // Check if target organization is a child of user's organization
-            $targetOrg = \App\Models\Organization::find($organizationId);
-            if ($targetOrg && $targetOrg->parent_id === $user->organization_id) {
-                return;
-            }
         }
 
         // Partner Directors can only access their own organization
@@ -224,26 +231,14 @@ class TeamService
         /** @var User $user */
         $user = Auth::user();
 
-        // Super Admin can do everything
-        if ($user->hasRole(['Admin'])) {
+        // Admin and Group Director can do everything
+        if ($user->hasRole(['Admin', 'Group Director'])) {
             return;
         }
 
         // Team creator can do everything with their team
         if ($team->creator_id === $user->id) {
             return;
-        }
-
-        // Group Directors can manage teams within their organization hierarchy
-        if ($user->hasRole('Group Director')) {
-            if ($team->organization_id === $user->organization_id) {
-                return;
-            }
-            
-            // Check if team's organization is a child of user's organization
-            if ($team->organization && $team->organization->parent_id === $user->organization_id) {
-                return;
-            }
         }
 
         // Partner Directors can manage teams within their organization
