@@ -20,7 +20,7 @@ class AuthController extends Controller
         if (!Auth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
-                'error' => 'Unauthorized',
+                'error' => 'Invalid credentials',
                 'message' => 'The provided credentials do not match our records.',
             ], 401);
         }
@@ -30,11 +30,30 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
+            'token' => $token,
             'message' => 'Login successful',
-            'data' => [
-                'token' => $token,
-                'user' => new UserResource($user),
-            ],
+            'data' => new UserResource($user),
+        ]);
+    }
+
+    public function me(Request $request)
+    {
+        $user = $request->user()->load(['roles', 'organization']);
+        
+        return response()->json([
+            'success' => true,
+            'data' => new UserResource($user),
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        
+        return response()->json([
+            'success' => true,
+            'data' => null,
+            'message' => 'Logout successful',
         ]);
     }
 }

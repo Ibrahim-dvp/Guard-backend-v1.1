@@ -14,12 +14,13 @@ Route::get('/api', function () {
         'frontend_url' => frontend_url(),
         'api_docs' => env('APP_URL') . '/api/documentation',
         'endpoints' => [
-            'auth' => env('APP_URL') . '/api/login',
-            'users' => env('APP_URL') . '/api/v1/users',
-            'organizations' => env('APP_URL') . '/api/v1/organizations',
-            'teams' => env('APP_URL') . '/api/v1/teams',
-            'leads' => env('APP_URL') . '/api/v1/leads',
-            'appointments' => env('APP_URL') . '/api/v1/appointments',
+            'auth' => env('APP_URL') . '/api/auth/login',
+            'users' => env('APP_URL') . '/api/users',
+            'organizations' => env('APP_URL') . '/api/organizations',
+            'leads' => env('APP_URL') . '/api/leads',
+            'appointments' => env('APP_URL') . '/api/appointments',
+            'dashboard' => env('APP_URL') . '/api/dashboard/stats',
+            'settings' => env('APP_URL') . '/api/settings',
         ]
     ]);
 });

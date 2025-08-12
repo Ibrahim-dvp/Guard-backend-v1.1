@@ -97,9 +97,9 @@
         "type": "text/javascript",
         "exec": [
           "// Auto-extract token from login responses",
-          "if (pm.response.json() && pm.response.json().data && pm.response.json().data.token) {",
-          "    pm.environment.set('auth_token', pm.response.json().data.token);",
-          "    pm.collectionVariables.set('auth_token', pm.response.json().data.token);",
+          "if (pm.response.json() && pm.response.json().data && pm.response.json().token) {",
+          "    pm.environment.set('auth_token', pm.response.json().token);",
+          "    pm.collectionVariables.set('auth_token', pm.response.json().token);",
           "}",
           "",
           "// Log response for debugging",
@@ -126,7 +126,7 @@
                   "",
                   "pm.test('Token received', function () {",
                   "    const jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.data.token).to.not.be.undefined;",
+                  "    pm.expect(jsonData.token).to.not.be.undefined;",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -146,9 +146,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/login",
+              "raw": "{{base_url}}/api/auth/login",
               "host": ["{{base_url}}"],
-              "path": ["api", "login"]
+              "path": ["api", "auth", "login"]
             },
             "description": "Login as Admin user"
           }
@@ -168,9 +168,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/login",
+              "raw": "{{base_url}}/api/auth/login",
               "host": ["{{base_url}}"],
-              "path": ["api", "login"]
+              "path": ["api", "auth", "login"]
             }
           }
         },
@@ -189,9 +189,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/login",
+              "raw": "{{base_url}}/api/auth/login",
               "host": ["{{base_url}}"],
-              "path": ["api", "login"]
+              "path": ["api", "auth", "login"]
             }
           }
         },
@@ -210,9 +210,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/login",
+              "raw": "{{base_url}}/api/auth/login",
               "host": ["{{base_url}}"],
-              "path": ["api", "login"]
+              "path": ["api", "auth", "login"]
             }
           }
         },
@@ -231,9 +231,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/login",
+              "raw": "{{base_url}}/api/auth/login",
               "host": ["{{base_url}}"],
-              "path": ["api", "login"]
+              "path": ["api", "auth", "login"]
             }
           }
         },
@@ -252,9 +252,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/login",
+              "raw": "{{base_url}}/api/auth/login",
               "host": ["{{base_url}}"],
-              "path": ["api", "login"]
+              "path": ["api", "auth", "login"]
             }
           }
         },
@@ -281,9 +281,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/organizations",
+              "raw": "{{base_url}}/api/organizations",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "organizations"]
+              "path": ["api",  "organizations"]
             }
           }
         },
@@ -293,9 +293,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/organizations/:id",
+              "raw": "{{base_url}}/api/organizations/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "organizations", ":id"],
+              "path": ["api",  "organizations", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -320,9 +320,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/organizations",
+              "raw": "{{base_url}}/api/organizations",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "organizations"]
+              "path": ["api",  "organizations"]
             }
           }
         },
@@ -341,9 +341,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/organizations/:id",
+              "raw": "{{base_url}}/api/organizations/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "organizations", ":id"],
+              "path": ["api",  "organizations", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -359,9 +359,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/organizations/:id",
+              "raw": "{{base_url}}/api/organizations/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "organizations", ":id"],
+              "path": ["api",  "organizations", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -382,9 +382,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/users?page=1&pageSize=10",
+              "raw": "{{base_url}}/api/users?page=1&pageSize=10",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users"],
+              "path": ["api",  "users"],
               "query": [
                 {
                   "key": "page",
@@ -414,9 +414,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/users/:id",
+              "raw": "{{base_url}}/api/users/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", ":id"],
+              "path": ["api",  "users", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -441,9 +441,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/users",
+              "raw": "{{base_url}}/api/users",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users"]
+              "path": ["api",  "users"]
             }
           }
         },
@@ -462,9 +462,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/users",
+              "raw": "{{base_url}}/api/users",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users"]
+              "path": ["api",  "users"]
             }
           }
         },
@@ -483,9 +483,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/users",
+              "raw": "{{base_url}}/api/users",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users"]
+              "path": ["api",  "users"]
             }
           }
         },
@@ -504,9 +504,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/users/:id",
+              "raw": "{{base_url}}/api/users/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", ":id"],
+              "path": ["api",  "users", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -522,9 +522,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/users/:id",
+              "raw": "{{base_url}}/api/users/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", ":id"],
+              "path": ["api",  "users", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -545,9 +545,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams?page=1&pageSize=10",
+              "raw": "{{base_url}}/api/teams?page=1&pageSize=10",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams"],
+              "path": ["api",  "teams"],
               "query": [
                 {
                   "key": "page",
@@ -572,9 +572,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/:id",
+              "raw": "{{base_url}}/api/teams/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", ":id"],
+              "path": ["api",  "teams", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -599,9 +599,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/teams",
+              "raw": "{{base_url}}/api/teams",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams"]
+              "path": ["api",  "teams"]
             }
           }
         },
@@ -620,9 +620,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/:id",
+              "raw": "{{base_url}}/api/teams/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", ":id"],
+              "path": ["api",  "teams", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -638,9 +638,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/:id",
+              "raw": "{{base_url}}/api/teams/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", ":id"],
+              "path": ["api",  "teams", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -665,9 +665,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/:team_id/users",
+              "raw": "{{base_url}}/api/teams/:team_id/users",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", ":team_id", "users"],
+              "path": ["api",  "teams", ":team_id", "users"],
               "variable": [
                 {
                   "key": "team_id",
@@ -683,9 +683,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/:team_id/users/:user_id",
+              "raw": "{{base_url}}/api/teams/:team_id/users/:user_id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", ":team_id", "users", ":user_id"],
+              "path": ["api",  "teams", ":team_id", "users", ":user_id"],
               "variable": [
                 {
                   "key": "team_id",
@@ -705,9 +705,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/:team_id/users",
+              "raw": "{{base_url}}/api/teams/:team_id/users",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", ":team_id", "users"],
+              "path": ["api",  "teams", ":team_id", "users"],
               "variable": [
                 {
                   "key": "team_id",
@@ -723,9 +723,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/users/:user_id/teams",
+              "raw": "{{base_url}}/api/users/:user_id/teams",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", ":user_id", "teams"],
+              "path": ["api",  "users", ":user_id", "teams"],
               "variable": [
                 {
                   "key": "user_id",
@@ -741,9 +741,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/my-teams",
+              "raw": "{{base_url}}/api/my-teams",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "my-teams"]
+              "path": ["api",  "my-teams"]
             }
           }
         }
@@ -758,9 +758,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/leads?page=1&pageSize=10",
+              "raw": "{{base_url}}/api/leads?page=1&pageSize=10",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads"],
+              "path": ["api",  "leads"],
               "query": [
                 {
                   "key": "page",
@@ -805,9 +805,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id",
+              "raw": "{{base_url}}/api/leads/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id"],
+              "path": ["api",  "leads", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -832,9 +832,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads",
+              "raw": "{{base_url}}/api/leads",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads"]
+              "path": ["api",  "leads"]
             }
           }
         },
@@ -853,9 +853,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id",
+              "raw": "{{base_url}}/api/leads/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id"],
+              "path": ["api",  "leads", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -871,9 +871,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id",
+              "raw": "{{base_url}}/api/leads/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id"],
+              "path": ["api",  "leads", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -898,9 +898,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id/assign",
+              "raw": "{{base_url}}/api/leads/:id/assign",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id", "assign"],
+              "path": ["api",  "leads", ":id", "assign"],
               "variable": [
                 {
                   "key": "id",
@@ -925,9 +925,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id/assign",
+              "raw": "{{base_url}}/api/leads/:id/assign",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id", "assign"],
+              "path": ["api",  "leads", ":id", "assign"],
               "variable": [
                 {
                   "key": "id",
@@ -952,9 +952,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id/status",
+              "raw": "{{base_url}}/api/leads/:id/status",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id", "status"],
+              "path": ["api",  "leads", ":id", "status"],
               "variable": [
                 {
                   "key": "id",
@@ -979,9 +979,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id/status",
+              "raw": "{{base_url}}/api/leads/:id/status",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id", "status"],
+              "path": ["api",  "leads", ":id", "status"],
               "variable": [
                 {
                   "key": "id",
@@ -1006,9 +1006,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id/status",
+              "raw": "{{base_url}}/api/leads/:id/status",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id", "status"],
+              "path": ["api",  "leads", ":id", "status"],
               "variable": [
                 {
                   "key": "id",
@@ -1033,9 +1033,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id/status",
+              "raw": "{{base_url}}/api/leads/:id/status",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id", "status"],
+              "path": ["api",  "leads", ":id", "status"],
               "variable": [
                 {
                   "key": "id",
@@ -1060,9 +1060,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/leads/:id/status",
+              "raw": "{{base_url}}/api/leads/:id/status",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "leads", ":id", "status"],
+              "path": ["api",  "leads", ":id", "status"],
               "variable": [
                 {
                   "key": "id",
@@ -1083,9 +1083,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments?page=1&pageSize=10",
+              "raw": "{{base_url}}/api/appointments?page=1&pageSize=10",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments"],
+              "path": ["api",  "appointments"],
               "query": [
                 {
                   "key": "page",
@@ -1120,9 +1120,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id",
+              "raw": "{{base_url}}/api/appointments/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id"],
+              "path": ["api",  "appointments", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -1147,9 +1147,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments",
+              "raw": "{{base_url}}/api/appointments",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments"]
+              "path": ["api",  "appointments"]
             }
           }
         },
@@ -1168,9 +1168,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id",
+              "raw": "{{base_url}}/api/appointments/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id"],
+              "path": ["api",  "appointments", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -1186,9 +1186,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id",
+              "raw": "{{base_url}}/api/appointments/:id",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id"],
+              "path": ["api",  "appointments", ":id"],
               "variable": [
                 {
                   "key": "id",
@@ -1213,9 +1213,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id/reschedule",
+              "raw": "{{base_url}}/api/appointments/:id/reschedule",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id", "reschedule"],
+              "path": ["api",  "appointments", ":id", "reschedule"],
               "variable": [
                 {
                   "key": "id",
@@ -1240,9 +1240,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id/cancel",
+              "raw": "{{base_url}}/api/appointments/:id/cancel",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id", "cancel"],
+              "path": ["api",  "appointments", ":id", "cancel"],
               "variable": [
                 {
                   "key": "id",
@@ -1267,9 +1267,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id/complete",
+              "raw": "{{base_url}}/api/appointments/:id/complete",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id", "complete"],
+              "path": ["api",  "appointments", ":id", "complete"],
               "variable": [
                 {
                   "key": "id",
@@ -1294,9 +1294,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id/confirm",
+              "raw": "{{base_url}}/api/appointments/:id/confirm",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id", "confirm"],
+              "path": ["api",  "appointments", ":id", "confirm"],
               "variable": [
                 {
                   "key": "id",
@@ -1321,9 +1321,9 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/:id/no-show",
+              "raw": "{{base_url}}/api/appointments/:id/no-show",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", ":id", "no-show"],
+              "path": ["api",  "appointments", ":id", "no-show"],
               "variable": [
                 {
                   "key": "id",
@@ -1339,9 +1339,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/upcoming?days=7",
+              "raw": "{{base_url}}/api/appointments/upcoming?days=7",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", "upcoming"],
+              "path": ["api",  "appointments", "upcoming"],
               "query": [
                 {
                   "key": "days",
@@ -1357,9 +1357,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/status/:status",
+              "raw": "{{base_url}}/api/appointments/status/:status",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", "status", ":status"],
+              "path": ["api",  "appointments", "status", ":status"],
               "variable": [
                 {
                   "key": "status",
@@ -1375,9 +1375,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/statistics?period=month",
+              "raw": "{{base_url}}/api/appointments/statistics?period=month",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", "statistics"],
+              "path": ["api",  "appointments", "statistics"],
               "query": [
                 {
                   "key": "period",
@@ -1393,9 +1393,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/schedule/daily?date=2025-08-15",
+              "raw": "{{base_url}}/api/appointments/schedule/daily?date=2025-08-15",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", "schedule", "daily"],
+              "path": ["api",  "appointments", "schedule", "daily"],
               "query": [
                 {
                   "key": "date",
@@ -1411,9 +1411,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/appointments/schedule/weekly?week_start=2025-08-11",
+              "raw": "{{base_url}}/api/appointments/schedule/weekly?week_start=2025-08-11",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "appointments", "schedule", "weekly"],
+              "path": ["api",  "appointments", "schedule", "weekly"],
               "query": [
                 {
                   "key": "week_start",
@@ -1434,9 +1434,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "raw": "{{base_url}}/api/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams"],
+              "path": ["api",  "teams"],
               "query": [
                 {
                   "key": "page",
@@ -1481,9 +1481,9 @@
               "raw": "{\n  \"name\": \"Sales Team Alpha\",\n  \"description\": \"Primary sales team for North region\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"slug\": \"sales-team-alpha\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/teams",
+              "raw": "{{base_url}}/api/teams",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams"]
+              "path": ["api",  "teams"]
             }
           }
         },
@@ -1493,9 +1493,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "raw": "{{base_url}}/api/teams/{{team_id}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", "{{team_id}}"]
+              "path": ["api",  "teams", "{{team_id}}"]
             }
           }
         },
@@ -1514,9 +1514,9 @@
               "raw": "{\n  \"name\": \"Sales Team Alpha - Updated\",\n  \"description\": \"Updated description for primary sales team\",\n  \"organization_id\": \"{{organization_id}}\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "raw": "{{base_url}}/api/teams/{{team_id}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", "{{team_id}}"]
+              "path": ["api",  "teams", "{{team_id}}"]
             }
           }
         },
@@ -1526,9 +1526,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "raw": "{{base_url}}/api/teams/{{team_id}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", "{{team_id}}"]
+              "path": ["api",  "teams", "{{team_id}}"]
             }
           }
         },
@@ -1547,9 +1547,9 @@
               "raw": "{\n  \"user_id\": \"{{user_id}}\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users",
+              "raw": "{{base_url}}/api/teams/{{team_id}}/users",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", "{{team_id}}", "users"]
+              "path": ["api",  "teams", "{{team_id}}", "users"]
             }
           }
         },
@@ -1559,9 +1559,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users/{{user_id}}",
+              "raw": "{{base_url}}/api/teams/{{team_id}}/users/{{user_id}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", "{{team_id}}", "users", "{{user_id}}"]
+              "path": ["api",  "teams", "{{team_id}}", "users", "{{user_id}}"]
             }
           }
         },
@@ -1571,9 +1571,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users",
+              "raw": "{{base_url}}/api/teams/{{team_id}}/users",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "teams", "{{team_id}}", "users"]
+              "path": ["api",  "teams", "{{team_id}}", "users"]
             }
           }
         },
@@ -1583,9 +1583,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/users/{{user_id}}/teams",
+              "raw": "{{base_url}}/api/users/{{user_id}}/teams",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "users", "{{user_id}}", "teams"]
+              "path": ["api",  "users", "{{user_id}}", "teams"]
             }
           }
         },
@@ -1595,9 +1595,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/my-teams",
+              "raw": "{{base_url}}/api/my-teams",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "my-teams"]
+              "path": ["api",  "my-teams"]
             }
           }
         },
@@ -1607,9 +1607,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "raw": "{{base_url}}/api/organizations/{{organization_id}}/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "organizations", "{{organization_id}}", "teams"],
+              "path": ["api",  "organizations", "{{organization_id}}", "teams"],
               "query": [
                 {
                   "key": "page",
@@ -1633,6 +1633,238 @@
                 }
               ]
             }
+          }
+        }
+      ]
+    },
+        {
+      "name": "📊 Dashboard & Analytics",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/stats?role=admin",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "stats"],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "admin"
+                }
+              ]
+            },
+            "description": "Get role-based dashboard statistics"
+          }
+        },
+        {
+          "name": "Get Team Performance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/performance/team/{{manager_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "performance", "team", "{{manager_id}}"]
+            },
+            "description": "Get comprehensive team performance metrics for a specific manager"
+          }
+        },
+        {
+          "name": "Clear Dashboard Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/cache",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "cache"]
+            },
+            "description": "Clear dashboard cache for immediate data refresh (Admin only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚙️ Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/settings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "settings"]
+            },
+            "description": "Get system configuration settings"
+          }
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"general\": {\n    \"systemName\": \"Guard CRM Updated\",\n    \"timezone\": \"UTC\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/settings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "settings"]
+            },
+            "description": "Update system settings"
+          }
+        },
+        {
+          "name": "Reset Settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/settings/reset",
+              "host": ["{{base_url}}"],
+              "path": ["api", "settings", "reset"]
+            },
+            "description": "Reset settings to defaults"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Additional Endpoints",
+      "item": [
+        {
+          "name": "Get Team Members",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/team/{{manager_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "team", "{{manager_id}}"]
+            },
+            "description": "Get team members for a specific manager"
+          }
+        },
+        {
+          "name": "Get Managers with Capacity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/managers/capacity",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "managers", "capacity"]
+            },
+            "description": "Get available managers for lead assignment"
+          }
+        },
+        {
+          "name": "Get Leads by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/leads/status/assigned_to_manager",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "status", "assigned_to_manager"]
+            },
+            "description": "Filter leads by specific status"
+          }
+        },
+        {
+          "name": "Toggle User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}/toggle-status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}", "toggle-status"]
+            },
+            "description": "Toggle user active status"
+          }
+        },
+        {
+          "name": "Toggle Organization Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/{{organization_id}}/toggle-status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "organizations", "{{organization_id}}", "toggle-status"]
+            },
+            "description": "Toggle organization active status"
           }
         }
       ]

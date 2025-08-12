@@ -16,14 +16,35 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
             'email' => $this->email,
-            'is_active' => $this->is_active,
-            'organization' => new OrganizationResource($this->whenLoaded('organization')),
-            'roles' => RoleResource::collection($this->whenLoaded('roles')),
-            'created_at' => $this->created_at?->toDateTimeString(),
-            'updated_at' => $this->updated_at?->toDateTimeString(),
+            'firstName' => $this->first_name,
+            'lastName' => $this->last_name,
+            'role' => $this->getRoleNames()->first(), // Single role as string
+            'organizationId' => $this->organization_id,
+            'createdBy' => $this->created_by,
+            'createdAt' => $this->created_at?->toISOString(),
+            'updatedAt' => $this->updated_at?->toISOString(),
+            'isActive' => $this->is_active,
+            'permissions' => $this->getAllPermissions()->map(function ($permission) {
+                return [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                    'resource' => explode('.', $permission->name)[0] ?? 'general',
+                    'action' => explode('.', $permission->name)[1] ?? 'access',
+                ];
+            })->toArray(),
+            $this->mergeWhen($request->user() && $request->user()->id === $this->id, [
+                'settings' => [
+                    'theme' => 'light',
+                    'notifications' => [
+                        'email' => true,
+                        'push' => true,
+                        'sms' => false,
+                    ],
+                    'language' => 'en',
+                    'timezone' => 'UTC',
+                ],
+            ]),
         ];
     }
 }
