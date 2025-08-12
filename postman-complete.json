@@ -48,6 +48,21 @@
     {
       "key": "password",
       "value": "password123"
+    },
+    {
+      "key": "team_id",
+      "value": "",
+      "description": "Team ID for testing"
+    },
+    {
+      "key": "organization_id",
+      "value": "",
+      "description": "Organization ID for testing"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "description": "User ID for testing"
     }
   ],
   "auth": {
@@ -1403,6 +1418,218 @@
                 {
                   "key": "week_start",
                   "value": "2025-08-11"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Teams Management",
+      "item": [
+        {
+          "name": "Get All Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "sort_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "desc"
+                },
+                {
+                  "key": "organization_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Team Alpha\",\n  \"description\": \"Primary sales team for North region\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"slug\": \"sales-team-alpha\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams"]
+            }
+          }
+        },
+        {
+          "name": "Get Team by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Team Alpha - Updated\",\n  \"description\": \"Updated description for primary sales team\",\n  \"organization_id\": \"{{organization_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Add User to Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}", "users"]
+            }
+          }
+        },
+        {
+          "name": "Remove User from Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Team Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teams/{{team_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teams", "{{team_id}}", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/{{user_id}}/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", "{{user_id}}", "teams"]
+            }
+          }
+        },
+        {
+          "name": "Get My Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/my-teams",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "my-teams"]
+            }
+          }
+        },
+        {
+          "name": "Get Teams by Organization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/{{organization_id}}/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "organizations", "{{organization_id}}", "teams"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "sort_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "desc"
                 }
               ]
             }

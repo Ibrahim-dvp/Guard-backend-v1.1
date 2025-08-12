@@ -23,7 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $permissions = [
             'users.create', 'users.view', 'users.update', 'users.delete',
             'organizations.create', 'organizations.view', 'organizations.update', 'organizations.delete',
-            'leads.create', 'leads.view', 'leads.assign', 'leads.accept-decline', 'leads.update-status',
+            'leads.create', 'leads.view', 'leads.assign', 'leads.accept-decline', 'leads.update-status','leads.delete',
             'teams.create', 'teams.view', 'teams.update', 'teams.delete', 'teams.manage_members',
             'appointments.create', 'appointments.view', 'appointments.update', 'appointments.delete',
             'reports.view'
@@ -64,7 +64,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'organizations.view',
             'users.create', 'users.view',
             'teams.manage_members',
-            'leads.view', 'leads.assign', 'leads.accept-decline',
+            'leads.view', 'leads.assign', 'leads.accept-decline', 'leads.update-status',
             'appointments.view', 'appointments.create', 'appointments.update', 'appointments.delete',
             'reports.view'
         ]);

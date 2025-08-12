@@ -37,14 +37,30 @@ class TeamService
         // Set the creator
         $details['creator_id'] = $user->id;
         
+        // Auto-assign organization based on user's role and organization
+        if (!isset($details['organization_id'])) {
+            if ($user->organization_id) {
+                $details['organization_id'] = $user->organization_id;
+            } else {
+                throw ValidationException::withMessages([
+                    'organization_id' => 'Teams must be associated with an organization.',
+                ]);
+            }
+        } else {
+            // Validate user can create teams in the specified organization
+            $this->validateOrganizationAccess($user, $details['organization_id']);
+        }
+        
         // Generate slug from name if not provided
         if (!isset($details['slug']) || empty($details['slug'])) {
             $details['slug'] = Str::slug($details['name']);
             
-            // Ensure slug uniqueness
+            // Ensure slug uniqueness within the organization
             $counter = 1;
             $originalSlug = $details['slug'];
-            while (Team::where('slug', $details['slug'])->exists()) {
+            while (Team::where('slug', $details['slug'])
+                      ->where('organization_id', $details['organization_id'])
+                      ->exists()) {
                 $details['slug'] = $originalSlug . '-' . $counter;
                 $counter++;
             }
@@ -77,7 +93,7 @@ class TeamService
 
     public function getTeamById(string $id): ?Team
     {
-        $team = $this->teamRepository->getById($id);
+        $team = $this->teamRepository->getTeamWithUsers($id);
         
         if ($team) {
             $this->authorizeTeamAction($team, 'view');
@@ -101,11 +117,12 @@ class TeamService
         $currentUser = Auth::user();
 
         // Business rules for adding users
-        if ($currentUser->hasRole('Director')) {
-            // Directors can only add users from their organization
-            if ($user->organization_id !== $currentUser->organization_id) {
+        if ($currentUser->hasRole(['Group Director', 'Partner Director'])) {
+            // Directors can only add users from their organization or team's organization
+            if ($user->organization_id !== $currentUser->organization_id && 
+                $user->organization_id !== $team->organization_id) {
                 throw ValidationException::withMessages([
-                    'user_id' => 'You can only add users from your own organization to the team.',
+                    'user_id' => 'You can only add users from your organization or the team\'s organization.',
                 ]);
             }
         }
@@ -135,7 +152,7 @@ class TeamService
 
         // Users can only see their own teams unless they have special permissions
         if ($userId && $user->id !== $authUser->id) {
-            if (!$authUser->hasRole(['Super Admin', 'Director'])) {
+            if (!$authUser->hasRole(['Group Director', 'Partner Director'])) {
                 throw ValidationException::withMessages([
                     'user_id' => 'You are not authorized to view this user\'s teams.',
                 ]);
@@ -143,6 +160,60 @@ class TeamService
         }
 
         return $this->teamRepository->getUserTeams($user);
+    }
+
+    /**
+     * Get teams by organization
+     */
+    public function getTeamsByOrganization(string $organizationId, array $filters = []): LengthAwarePaginator
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        
+        // Validate user can access this organization's teams
+        $this->validateOrganizationAccess($user, $organizationId);
+        
+        return $this->teamRepository->getByOrganization($organizationId, $filters);
+    }
+
+    /**
+     * Validate user has access to organization
+     */
+    private function validateOrganizationAccess(User $user, string $organizationId): void
+    {
+        // Super Admin can access any organization
+        if ($user->hasRole(['Admin'])) {
+            return;
+        }
+
+        // Group Directors can access their organization and child organizations
+        if ($user->hasRole('Group Director')) {
+            if ($user->organization_id === $organizationId) {
+                return;
+            }
+            
+            // Check if target organization is a child of user's organization
+            $targetOrg = \App\Models\Organization::find($organizationId);
+            if ($targetOrg && $targetOrg->parent_id === $user->organization_id) {
+                return;
+            }
+        }
+
+        // Partner Directors can only access their own organization
+        if ($user->hasRole('Partner Director')) {
+            if ($user->organization_id === $organizationId) {
+                return;
+            }
+        }
+
+        // Other roles can only access their own organization
+        if ($user->organization_id === $organizationId) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'organization' => 'You are not authorized to access teams in this organization.',
+        ]);
     }
 
     /**
@@ -154,7 +225,7 @@ class TeamService
         $user = Auth::user();
 
         // Super Admin can do everything
-        if ($user->hasRole('Super Admin')) {
+        if ($user->hasRole(['Admin'])) {
             return;
         }
 
@@ -163,9 +234,28 @@ class TeamService
             return;
         }
 
-        // Directors can manage teams within their organization
-        if ($user->hasRole('Director')) {
-            if ($team->creator->organization_id === $user->organization_id) {
+        // Group Directors can manage teams within their organization hierarchy
+        if ($user->hasRole('Group Director')) {
+            if ($team->organization_id === $user->organization_id) {
+                return;
+            }
+            
+            // Check if team's organization is a child of user's organization
+            if ($team->organization && $team->organization->parent_id === $user->organization_id) {
+                return;
+            }
+        }
+
+        // Partner Directors can manage teams within their organization
+        if ($user->hasRole('Partner Director')) {
+            if ($team->organization_id === $user->organization_id) {
+                return;
+            }
+        }
+
+        // Coordinators can view teams within their organization
+        if ($user->hasRole('Coordinator') && $action === 'view') {
+            if ($team->organization_id === $user->organization_id) {
                 return;
             }
         }

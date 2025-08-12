@@ -7,6 +7,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends Model
 {
@@ -23,6 +25,7 @@ class Team extends Model
         'description',
         'slug',
         'creator_id',
+        'organization_id',
     ];
 
     /**
@@ -36,9 +39,24 @@ class Team extends Model
     ];
 
     /**
+     * The relationships that should always be loaded.
+     *
+     * @var array<int, string>
+     */
+    protected $with = [];
+
+    /**
+     * Get the organization that owns the team.
+     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+    /**
      * Get the user who created the team.
      */
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
@@ -46,8 +64,41 @@ class Team extends Model
     /**
      * Get the users that belong to the team.
      */
-    public function users()
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'teams_users');
+        return $this->belongsToMany(User::class, 'teams_users')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get only active users that belong to the team.
+     */
+    public function activeUsers(): BelongsToMany
+    {
+        return $this->users()->where('users.is_active', true);
+    }
+
+    /**
+     * Scope to filter teams by organization.
+     */
+    public function scopeByOrganization($query, $organizationId)
+    {
+        return $query->where('organization_id', $organizationId);
+    }
+
+    /**
+     * Scope to filter teams with user counts (performance optimization).
+     */
+    public function scopeWithUserCounts($query)
+    {
+        return $query->withCount(['users', 'activeUsers']);
+    }
+
+    /**
+     * Scope to eager load common relationships (performance optimization).
+     */
+    public function scopeWithRelations($query, array $relations = ['creator', 'organization'])
+    {
+        return $query->with($relations);
     }
 }

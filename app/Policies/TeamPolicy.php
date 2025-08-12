@@ -13,7 +13,7 @@ class TeamPolicy
      */
     public function before(User $user, string $ability): bool|null
     {
-        if ($user->hasRole(['Super Admin', 'Admin','Group Director'])) {
+        if ($user->hasRole(['Admin','Group Director'])) {
             return true;
         }
 

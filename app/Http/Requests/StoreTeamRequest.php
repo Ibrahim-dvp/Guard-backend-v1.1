@@ -25,12 +25,26 @@ class StoreTeamRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'organization_id' => [
+                'nullable',
+                'uuid',
+                Rule::exists('organizations', 'id')->where(function ($query) {
+                    $query->where('is_active', true);
+                })
+            ],
             'slug' => [
                 'nullable',
                 'string',
                 'max:255',
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
-                Rule::unique('teams', 'slug')
+                // Unique within organization scope
+                Rule::unique('teams', 'slug')->where(function ($query) {
+                    $organizationId = $this->input('organization_id') ?: auth()->user()->organization_id;
+                    if ($organizationId) {
+                        return $query->where('organization_id', $organizationId);
+                    }
+                    return $query;
+                })
             ],
         ];
     }
@@ -46,8 +60,10 @@ class StoreTeamRequest extends FormRequest
             'name.required' => 'Team name is required.',
             'name.max' => 'Team name cannot exceed 255 characters.',
             'description.max' => 'Team description cannot exceed 1000 characters.',
+            'organization_id.uuid' => 'Organization ID must be a valid UUID.',
+            'organization_id.exists' => 'The selected organization does not exist or is not active.',
             'slug.regex' => 'Slug must only contain lowercase letters, numbers, and hyphens.',
-            'slug.unique' => 'This slug is already taken.',
+            'slug.unique' => 'This slug is already taken within the organization.',
         ];
     }
 
@@ -61,6 +77,7 @@ class StoreTeamRequest extends FormRequest
         return [
             'name' => 'team name',
             'description' => 'team description',
+            'organization_id' => 'organization',
             'slug' => 'team slug',
         ];
     }

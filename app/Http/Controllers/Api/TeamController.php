@@ -123,4 +123,14 @@ class TeamController extends Controller
         $teams = $this->teamService->getUserTeams($user->id);
         return new SuccessResource(TeamResource::collection($teams));
     }
+
+    /**
+     * Get teams by organization.
+     */
+    public function getByOrganization(Request $request, string $organizationId)
+    {
+        $this->authorize('viewAny', Team::class);
+        $teams = $this->teamService->getTeamsByOrganization($organizationId, $request->all());
+        return new SuccessResource($teams);
+    }
 }

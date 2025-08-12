@@ -63,12 +63,13 @@ class TeamSeeder extends Seeder
         ];
 
         foreach ($protectaTeams as $teamData) {
-            if ($teamData['creator']) {
+            if ($teamData['creator'] && $protectaGroup) {
                 $team = Team::create([
                     'name' => $teamData['name'],
                     'description' => $teamData['description'],
                     'slug' => $teamData['slug'],
                     'creator_id' => $teamData['creator']->id,
+                    'organization_id' => $protectaGroup->id,
                 ]);
 
                 // Add manager and agents to the team
@@ -88,12 +89,12 @@ class TeamSeeder extends Seeder
                     $team->users()->attach($members);
                 }
 
-                $this->command->info("✅ Created team: {$team->name} with " . count($members) . " members");
+                $this->command->info("✅ Created team: {$team->name} with " . count($members) . " members for {$protectaGroup->name}");
             }
         }
 
         // Create teams for Intelligentb2b
-        if ($techDirector && $techManager && $techAgent) {
+        if ($techDirector && $techManager && $techAgent && $intelligentb2b) {
             $intelligentTeams = [
                 [
                     'name' => 'Tech Solutions Team',
@@ -111,6 +112,7 @@ class TeamSeeder extends Seeder
                     'description' => $teamData['description'],
                     'slug' => $teamData['slug'],
                     'creator_id' => $teamData['creator']->id,
+                    'organization_id' => $intelligentb2b->id,
                 ]);
 
                 // Add manager and agents to the team
@@ -130,7 +132,7 @@ class TeamSeeder extends Seeder
                     $team->users()->attach($members);
                 }
 
-                $this->command->info("✅ Created team: {$team->name} with " . count($members) . " members");
+                $this->command->info("✅ Created team: {$team->name} with " . count($members) . " members for {$intelligentb2b->name}");
             }
         }
 

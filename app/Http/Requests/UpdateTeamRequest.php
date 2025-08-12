@@ -22,16 +22,33 @@ class UpdateTeamRequest extends FormRequest
      */
     public function rules(): array
     {
+        $team = $this->route('team');
+        
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'organization_id' => [
+                'sometimes',
+                'nullable',
+                'uuid',
+                Rule::exists('organizations', 'id')->where(function ($query) {
+                    $query->where('is_active', true);
+                })
+            ],
             'slug' => [
                 'sometimes',
                 'nullable',
                 'string',
                 'max:255',
                 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
-                Rule::unique('teams', 'slug')->ignore($this->route('team'))
+                Rule::unique('teams', 'slug')->ignore($team)->where(function ($query) use ($team) {
+                    // Ensure uniqueness within the same organization
+                    $organizationId = $this->input('organization_id') ?: $team->organization_id;
+                    if ($organizationId) {
+                        return $query->where('organization_id', $organizationId);
+                    }
+                    return $query;
+                })
             ],
         ];
     }
@@ -47,8 +64,10 @@ class UpdateTeamRequest extends FormRequest
             'name.required' => 'Team name is required.',
             'name.max' => 'Team name cannot exceed 255 characters.',
             'description.max' => 'Team description cannot exceed 1000 characters.',
+            'organization_id.uuid' => 'Organization ID must be a valid UUID.',
+            'organization_id.exists' => 'The selected organization does not exist or is not active.',
             'slug.regex' => 'Slug must only contain lowercase letters, numbers, and hyphens.',
-            'slug.unique' => 'This slug is already taken.',
+            'slug.unique' => 'This slug is already taken within the organization.',
         ];
     }
 
@@ -62,6 +81,7 @@ class UpdateTeamRequest extends FormRequest
         return [
             'name' => 'team name',
             'description' => 'team description',
+            'organization_id' => 'organization',
             'slug' => 'team slug',
         ];
     }

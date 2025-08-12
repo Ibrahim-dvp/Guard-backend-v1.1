@@ -39,7 +39,9 @@ class LeadPolicy
         }
 
         if ($user->hasRole('Sales Manager')) {
-            return $user->organization_id === $lead->organization_id;
+            // Sales Manager can view leads assigned to them or assigned by them
+            return $user->id === $lead->assigned_to_id || 
+                   $user->id === $lead->assigned_by_id;
         }
 
         if ($user->hasRole('Sales Agent')) {
@@ -48,6 +50,10 @@ class LeadPolicy
 
         if ($user->hasRole('Referral')) {
             return $user->id === $lead->referral_id;
+        }
+
+        if ($user->hasRole(['Partner Director', 'Coordinator'])) {
+            return $user->organization_id === $lead->organization_id;
         }
 
         return false;
@@ -85,12 +91,14 @@ class LeadPolicy
         }
 
         if ($user->hasRole('Coordinator')) {
-            // return $lead->status === LeadStatus::NEW; // Temporarily disabled to allow reassignment
-            return true;
+            // Coordinators can assign any lead in their organization
+            return $user->organization_id === $lead->organization_id;
         }
 
         if ($user->hasRole('Sales Manager')) {
-            return $lead->assigned_to_id === $user->id;
+            // Sales Manager can reassign leads assigned to them or assigned by them
+            return $user->id === $lead->assigned_to_id || 
+                   $user->id === $lead->assigned_by_id;
         }
 
         return false;
@@ -103,9 +111,9 @@ class LeadPolicy
         }
 
         if ($user->hasRole('Sales Manager')) {
-            // A manager can update the status of a lead assigned to them or their team members.
+            // A manager can update the status of a lead assigned to them or assigned by them
             return $user->id === $lead->assigned_to_id || 
-                   User::where('id', $lead->assigned_to_id)->where('created_by', $user->id)->exists();
+                   $user->id === $lead->assigned_by_id;
         }
 
         if ($user->hasRole('Sales Agent')) {

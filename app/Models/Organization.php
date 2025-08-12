@@ -52,6 +52,24 @@ class Organization extends Model
     }
 
     /**
+     * Get the teams that belong to the organization.
+     */
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Team::class);
+    }
+
+    /**
+     * Get only active teams with active users.
+     */
+    public function activeTeams(): HasMany
+    {
+        return $this->teams()->whereHas('users', function ($query) {
+            $query->where('users.is_active', true);
+        });
+    }
+
+    /**
      * Get the users in the organization.
      */
     public function users(): HasMany

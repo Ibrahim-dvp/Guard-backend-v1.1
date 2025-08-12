@@ -26,8 +26,8 @@ class LeadResource extends JsonResource
             'revenue' => $this->revenue,
             // 'notes' => NoteResource::collection($this->whenLoaded('notes')),
             // 'appointments' => AppointmentResource::collection($this->whenLoaded('appointments')),
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }

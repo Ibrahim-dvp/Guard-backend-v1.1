@@ -22,8 +22,8 @@ class UserResource extends JsonResource
             'is_active' => $this->is_active,
             'organization' => new OrganizationResource($this->whenLoaded('organization')),
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }

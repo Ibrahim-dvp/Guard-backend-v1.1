@@ -35,6 +35,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'middleware' => 'auth:sanctum
     Route::get('teams/{team}/users', [TeamController::class, 'getTeamUsers'])->name('teams.users');
     Route::get('users/{user}/teams', [TeamController::class, 'getUserTeams'])->name('users.teams');
     Route::get('my-teams', [TeamController::class, 'getUserTeams'])->name('my.teams');
+    
+    // Organization-based team routes
+    Route::get('organizations/{organizationId}/teams', [TeamController::class, 'getByOrganization'])->name('organizations.teams');
 
     // Appointment specific routes
     Route::patch('appointments/{appointment}/reschedule', [AppointmentController::class, 'reschedule'])->name('appointments.reschedule');

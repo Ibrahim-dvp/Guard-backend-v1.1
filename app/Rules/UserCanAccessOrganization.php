@@ -18,16 +18,13 @@ class UserCanAccessOrganization implements ValidationRule
     {
         /** @var User $user */
         $user = Auth::user();
-        if ($attribute['role_name'] === 'Referral') {
-            // $organization = Organization::where('name', 'Group Director')->first();
-            // if ($organization) {
-            //     $value = $organization->id;
-            // }
-            return ; // Anyone can create a Referral without organization restriction
-        }
 
-        if ($user->hasRole('Admin')) {
-            return; // Admins can access any organization
+        // Get the role_name from the request data
+        $request = request();
+        $roleName = $request->input('role_name');
+        
+        if ($roleName === 'Referral' || $user->hasRole(['Admin', 'Group Director'])) {
+            return; // Anyone can create a Referral without organization restriction
         }
 
         if ($user->organization_id !== $value) {

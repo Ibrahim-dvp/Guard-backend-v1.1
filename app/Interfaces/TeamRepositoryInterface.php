@@ -28,4 +28,8 @@ interface TeamRepositoryInterface
     public function getTeamUsers(Team $team): Collection;
 
     public function getUserTeams(User $user): Collection;
+
+    public function getByOrganization(string $organizationId, array $filters = []): LengthAwarePaginator;
+
+    public function getTeamWithUsers(string $id): ?Team;
 }

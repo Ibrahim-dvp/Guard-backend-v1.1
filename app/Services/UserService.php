@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
+use App\Models\Organization;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,10 +28,13 @@ class UserService
     {
         $data['password'] = Hash::make($data['password']);
         $data['created_by'] = Auth::id(); // Set the creator
-        if ($data['role_name']=== 'Referral') {
-            array_push($data['organization_id'], Organization::where('name', 'Protecta Group')->first()->id);
-            echo "Referral created without organization restriction.\n" . implode(", ", $data['organization_id']);
+        
+        // Handle Referral users - they can be created without organization
+        if ($data['role_name'] === 'Referral' && !isset($data['organization_id'])) {
+            // Set to null explicitly - Referral users don't need organization
+            $data['organization_id'] = null;
         }
+        
         $user = $this->userRepository->createUser($data);
         $user->assignRole($data['role_name']);
         return $user;
