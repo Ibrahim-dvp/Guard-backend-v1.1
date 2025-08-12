@@ -9,7 +9,7 @@ if (!function_exists('frontend_url')) {
      */
     function frontend_url(string $path = ''): string
     {
-        $baseUrl = config('app.frontend_url', env('FRONTEND_URL', 'http://https://guard-alpha.vercel.app'));
+        $baseUrl = config('app.frontend_url', env('FRONTEND_URL', 'https://guard-alpha.vercel.app'));
         
         if (empty($path)) {
             return $baseUrl;

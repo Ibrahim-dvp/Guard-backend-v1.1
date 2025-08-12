@@ -2,10 +2,29 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Main redirect - when someone visits your API URL, redirect to frontend
 Route::get('/', function () {
     return redirect(frontend_url());
 });
 
+// Redirect common frontend routes to frontend with preserved paths
+Route::get('/login', function () {
+    return redirect(frontend_url('/login'));
+});
+
+Route::get('/dashboard', function () {
+    return redirect(frontend_url('/dashboard'));
+});
+
+Route::get('/leads', function () {
+    return redirect(frontend_url('/leads'));
+});
+
+Route::get('/users', function () {
+    return redirect(frontend_url('/users'));
+});
+
+// API info endpoint - shows API information
 Route::get('/api', function () {
     return response()->json([
         'message' => 'Guard Backend API',
@@ -25,6 +44,7 @@ Route::get('/api', function () {
     ]);
 });
 
+// Health check endpoint - for monitoring
 Route::get('/health', function () {
     return response()->json([
         'status' => 'healthy',
@@ -33,4 +53,9 @@ Route::get('/health', function () {
         'database' => 'connected',
         'frontend_url' => frontend_url(),
     ]);
+});
+
+// Catch-all route for any other web requests - redirect to frontend
+Route::fallback(function () {
+    return redirect(frontend_url());
 });

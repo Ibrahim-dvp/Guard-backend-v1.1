@@ -64,7 +64,7 @@ return [
     |
     */
 
-    'frontend_url' => env('FRONTEND_URL', 'http://https://guard-alpha.vercel.app'),
+    'frontend_url' => env('FRONTEND_URL', 'https://guard-alpha.vercel.app'),
 
     /*
     |--------------------------------------------------------------------------
