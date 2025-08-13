@@ -77,6 +77,12 @@ class StoreAppointmentRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        // Convert camelCase to snake_case
+        $this->merge([
+            'lead_id' => $this->leadId ?? $this->lead_id,
+            'scheduled_at' => $this->scheduledAt ?? $this->scheduled_at,
+        ]);
+
         // Set default duration if not provided
         if (!$this->has('duration')) {
             $this->merge(['duration' => 60]); // 1 hour default

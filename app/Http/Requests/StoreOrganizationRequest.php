@@ -16,6 +16,18 @@ class StoreOrganizationRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation by converting camelCase to snake_case.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'parent_id' => $this->parentId ?? $this->parent_id,
+            'director_id' => $this->directorId ?? $this->director_id,
+            'is_active' => $this->isActive ?? $this->is_active,
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>

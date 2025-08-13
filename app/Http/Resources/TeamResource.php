@@ -20,20 +20,20 @@ class TeamResource extends JsonResource
             'description' => $this->description,
             'slug' => $this->slug,
             'creator' => new UserResource($this->whenLoaded('creator')),
-            'creator_id' => $this->creator_id,
+            'creatorId' => $this->creator_id,
             'organization' => new OrganizationResource($this->whenLoaded('organization')),
-            'organization_id' => $this->organization_id,
+            'organizationId' => $this->organization_id,
             'users' => UserResource::collection($this->whenLoaded('users')),
-            'users_count' => $this->when(
+            'usersCount' => $this->when(
                 $this->relationLoaded('users'),
                 fn () => $this->users->count()
             ),
-            'active_users_count' => $this->when(
+            'activeUsersCount' => $this->when(
                 isset($this->active_users_count),
                 fn () => $this->active_users_count
             ),
-            'created_at' => $this->created_at?->toDateTimeString(),
-            'updated_at' => $this->updated_at?->toDateTimeString(),
+            'createdAt' => $this->created_at?->toISOString(),
+            'updatedAt' => $this->updated_at?->toISOString(),
         ];
     }
 }

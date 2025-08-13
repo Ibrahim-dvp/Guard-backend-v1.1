@@ -16,6 +16,16 @@ class UpdateTeamRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation by converting camelCase to snake_case.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'organization_id' => $this->organizationId ?? $this->organization_id,
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>

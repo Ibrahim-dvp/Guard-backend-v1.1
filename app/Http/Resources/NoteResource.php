@@ -17,9 +17,10 @@ class NoteResource extends JsonResource
         return [
             'id' => $this->id,
             'content' => $this->content,
-            'is_internal' => $this->is_internal,
-            'created_by' => new UserResource($this->whenLoaded('user')),
-            'created_at' => $this->created_at?->toDateTimeString(),
+            'isInternal' => $this->is_internal,
+            'createdBy' => new UserResource($this->whenLoaded('user')),
+            'createdAt' => $this->created_at?->toISOString(),
+            'updatedAt' => $this->updated_at?->toISOString(),
         ];
     }
 }
