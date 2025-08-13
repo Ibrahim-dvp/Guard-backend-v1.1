@@ -36,9 +36,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function me(Request $request)
+    public function user(Request $request)
     {
-        $user = $request->user()->load(['roles', 'organization']);
+        $user = User::with(['roles', 'organization'])->find(Auth::id());
         
         return response()->json([
             'success' => true,

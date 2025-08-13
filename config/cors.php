@@ -22,7 +22,8 @@ return [
     'allowed_origins' => [
         env('FRONTEND_URL', 'http://https://guard-alpha.vercel.app'),
         'http://https://guard-alpha.vercel.app',
-        'http://localhost:3001',
+         'http://localhost:3000',
+        'http://127.0.0.1:3000',
         'https://zmachine.pro',
         'https://www.zmachine.pro',
     ],
