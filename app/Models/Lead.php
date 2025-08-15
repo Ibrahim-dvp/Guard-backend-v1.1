@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\LeadStatus;
+use App\Traits\HasCamelCaseAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,7 @@ class Lead extends Model
 {
     use HasFactory;
     use HasUuids;
+    use HasCamelCaseAttributes;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +26,11 @@ class Lead extends Model
     protected $fillable = [
         'referral_id',
         'organization_id',
-        'client_info',
+        'client_first_name',
+        'client_last_name',
+        'client_email',
+        'client_phone',
+        'client_company',
         'status',
         'assigned_to_id',
         'assigned_by_id',
@@ -38,8 +44,9 @@ class Lead extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'client_info' => 'array',
         'status' => LeadStatus::class,
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**
@@ -88,5 +95,27 @@ class Lead extends Model
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    /**
+     * Get the client's full name.
+     */
+    public function getClientFullNameAttribute(): string
+    {
+        return trim($this->client_first_name . ' ' . $this->client_last_name);
+    }
+
+    /**
+     * Scope to search clients by name, email, phone, or company.
+     */
+    public function scopeSearchClient($query, $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('client_first_name', 'LIKE', "%{$search}%")
+              ->orWhere('client_last_name', 'LIKE', "%{$search}%")
+              ->orWhere('client_email', 'LIKE', "%{$search}%")
+              ->orWhere('client_phone', 'LIKE', "%{$search}%")
+              ->orWhere('client_company', 'LIKE', "%{$search}%");
+        });
     }
 }

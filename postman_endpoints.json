@@ -1,0 +1,1902 @@
+{
+  "info": {
+    "name": "Guard Backend API v1.1 - Production Ready",
+    "description": "Complete API collection for Guard Backend system with all endpoints for production testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.1.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.zmachine.pro",
+      "description": "Production API base URL"
+    },
+    {
+      "key": "local_url",
+      "value": "http://localhost:8000",
+      "description": "Local development URL"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "description": "Bearer token for authentication"
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@guard.com"
+    },
+    {
+      "key": "director_email",
+      "value": "director@protecta.com"
+    },
+    {
+      "key": "manager_email",
+      "value": "manager1@guard.com"
+    },
+    {
+      "key": "agent_email",
+      "value": "agent1@guard.com"
+    },
+    {
+      "key": "coordinator_email",
+      "value": "coordinator@guard.com"
+    },
+    {
+      "key": "referral_email",
+      "value": "referral1@partner.com"
+    },
+    {
+      "key": "password",
+      "value": "password123"
+    },
+    {
+      "key": "team_id",
+      "value": "",
+      "description": "Team ID for testing"
+    },
+    {
+      "key": "organization_id",
+      "value": "",
+      "description": "Organization ID for testing"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "description": "User ID for testing"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set Content-Type for requests with body",
+          "if (pm.request.body && pm.request.body.mode === 'raw') {",
+          "    pm.request.headers.add({",
+          "        key: 'Content-Type',",
+          "        value: 'application/json'",
+          "    });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-extract token from login responses",
+          "if (pm.response.json() && pm.response.json().data && pm.response.json().token) {",
+          "    pm.environment.set('auth_token', pm.response.json().token);",
+          "    pm.collectionVariables.set('auth_token', pm.response.json().token);",
+          "}",
+          "",
+          "// Log response for debugging",
+          "console.log('Response Status:', pm.response.status);",
+          "console.log('Response Body:', pm.response.text());"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Token received', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.token).to.not.be.undefined;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login as Admin user"
+          }
+        },
+        {
+          "name": "Director Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{director_email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Sales Manager Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{manager_email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Sales Agent Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{agent_email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Coordinator Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{coordinator_email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Referral Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{referral_email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Organizations",
+      "item": [
+        {
+          "name": "List Organizations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/organizations",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "organizations"]
+            }
+          }
+        },
+        {
+          "name": "Get Organization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{organization_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Organization",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Organization\",\n  \"description\": \"A new organization for testing\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organizations",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "organizations"]
+            }
+          }
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Organization Name\",\n  \"description\": \"Updated description\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/organizations/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{organization_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{organization_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users?page=1&pageSize=10",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User - Sales Manager",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"New\",\n  \"last_name\": \"Manager\",\n  \"email\": \"newmanager@test.com\",\n  \"password\": \"password123\",\n  \"role_name\": \"Sales Manager\",\n  \"organization_id\": \"{{organization_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User - Sales Agent",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"New\",\n  \"last_name\": \"Agent\",\n  \"email\": \"newagent@test.com\",\n  \"password\": \"password123\",\n  \"role_name\": \"Sales Agent\",\n  \"organization_id\": \"{{organization_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User - Referral",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"New\",\n  \"last_name\": \"Referral\",\n  \"email\": \"newreferral@test.com\",\n  \"password\": \"password123\",\n  \"role_name\": \"Referral\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Updated\",\n  \"last_name\": \"Name\",\n  \"email\": \"updated@test.com\",\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎯 Teams",
+      "item": [
+        {
+          "name": "List Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams?page=1&pageSize=10",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Team",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{team_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Test Team\",\n  \"description\": \"A team created for testing\",\n  \"slug\": \"new-test-team\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams"]
+            }
+          }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Team Name\",\n  \"description\": \"Updated team description\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/teams/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{team_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{team_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add User to Team",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/teams/:team_id/users",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", ":team_id", "users"],
+              "variable": [
+                {
+                  "key": "team_id",
+                  "value": "{{team_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remove User from Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/:team_id/users/:user_id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", ":team_id", "users", ":user_id"],
+              "variable": [
+                {
+                  "key": "team_id",
+                  "value": "{{team_id}}"
+                },
+                {
+                  "key": "user_id",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Team Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/:team_id/users",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", ":team_id", "users"],
+              "variable": [
+                {
+                  "key": "team_id",
+                  "value": "{{team_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/:user_id/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users", ":user_id", "teams"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/my-teams",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "my-teams"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📈 Leads",
+      "item": [
+        {
+          "name": "List Leads",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads?page=1&pageSize=10",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "assignedTo",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sortField",
+                  "value": "created_at",
+                  "disabled": true
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Lead",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Lead",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_first_name\": \"John\",\n  \"client_last_name\": \"Doe\",\n  \"client_email\": \"john.doe@example.com\",\n  \"client_phone\": \"+1234567890\",\n  \"client_company\": \"Tech Corp\",\n  \"source\": \"Website\",\n  \"revenue\": 15000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads"]
+            }
+          }
+        },
+        {
+          "name": "Update Lead",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_first_name\": \"John\",\n  \"client_last_name\": \"Doe Updated\",\n  \"client_email\": \"john.updated@example.com\",\n  \"client_phone\": \"+1234567890\",\n  \"client_company\": \"Updated Tech Corp\",\n  \"source\": \"LinkedIn\",\n  \"revenue\": 25000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Lead",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assign Lead to Manager",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignedTo\": \"{{manager_user_id}}\",\n  \"notes\": \"Assigning to sales manager for review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id/assign",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id", "assign"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assign Lead to Agent",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignedTo\": \"{{agent_user_id}}\",\n  \"notes\": \"Assigning to sales agent for follow-up\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id/assign",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id", "assign"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Lead Status - New",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"new\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Lead Status - Contacted",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"contacted\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Lead Status - Qualified",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"qualified\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Lead Status - Converted",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"converted\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Lead Status - Rejected",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "leads", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{lead_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Appointments",
+      "item": [
+        {
+          "name": "List Appointments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments?page=1&pageSize=10",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "date_from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Appointment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lead_id\": \"{{lead_id}}\",\n  \"scheduled_at\": \"2025-08-15T14:00:00Z\",\n  \"duration\": 60,\n  \"location\": \"Online - Zoom\",\n  \"notes\": \"Initial consultation meeting\",\n  \"status\": \"scheduled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/appointments",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments"]
+            }
+          }
+        },
+        {
+          "name": "Update Appointment",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduled_at\": \"2025-08-15T15:00:00Z\",\n  \"duration\": 90,\n  \"location\": \"Office - Conference Room A\",\n  \"notes\": \"Updated consultation meeting with extended time\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Appointment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reschedule Appointment",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduled_at\": \"2025-08-16T14:00:00Z\",\n  \"reason\": \"Client requested different time\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id/reschedule",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id", "reschedule"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Appointment",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Client cancelled due to scheduling conflict\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id", "cancel"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Appointment Complete",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Meeting completed successfully. Client showed interest in premium package.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id/complete",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id", "complete"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Confirm Appointment",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Appointment confirmed with client\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id/confirm",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id", "confirm"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Appointment No-Show",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Client did not show up for the appointment\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/appointments/:id/no-show",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", ":id", "no-show"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{appointment_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Upcoming Appointments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments/upcoming?days=7",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", "upcoming"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "7"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Appointments by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments/status/:status",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", "status", ":status"],
+              "variable": [
+                {
+                  "key": "status",
+                  "value": "scheduled"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Appointment Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments/statistics?period=month",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", "statistics"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Daily Schedule",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments/schedule/daily?date=2025-08-15",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", "schedule", "daily"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2025-08-15"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Weekly Schedule",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/appointments/schedule/weekly?week_start=2025-08-11",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "appointments", "schedule", "weekly"],
+              "query": [
+                {
+                  "key": "week_start",
+                  "value": "2025-08-11"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Teams Management",
+      "item": [
+        {
+          "name": "Get All Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "sort_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "desc"
+                },
+                {
+                  "key": "organization_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Team Alpha\",\n  \"description\": \"Primary sales team for North region\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"slug\": \"sales-team-alpha\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams"]
+            }
+          }
+        },
+        {
+          "name": "Get Team by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Team Alpha - Updated\",\n  \"description\": \"Updated description for primary sales team\",\n  \"organization_id\": \"{{organization_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/{{team_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", "{{team_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Add User to Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/teams/{{team_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", "{{team_id}}", "users"]
+            }
+          }
+        },
+        {
+          "name": "Remove User from Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/{{team_id}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", "{{team_id}}", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Team Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/teams/{{team_id}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "teams", "{{team_id}}", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}/teams",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "users", "{{user_id}}", "teams"]
+            }
+          }
+        },
+        {
+          "name": "Get My Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/my-teams",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "my-teams"]
+            }
+          }
+        },
+        {
+          "name": "Get Teams by Organization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/{{organization_id}}/teams?page=1&pageSize=10&search=&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api",  "organizations", "{{organization_id}}", "teams"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "sort_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "desc"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+        {
+      "name": "📊 Dashboard & Analytics",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/stats?role=admin",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "stats"],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "admin"
+                }
+              ]
+            },
+            "description": "Get role-based dashboard statistics"
+          }
+        },
+        {
+          "name": "Get Team Performance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/performance/team/{{manager_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "performance", "team", "{{manager_id}}"]
+            },
+            "description": "Get comprehensive team performance metrics for a specific manager"
+          }
+        },
+        {
+          "name": "Clear Dashboard Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/dashboard/cache",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "cache"]
+            },
+            "description": "Clear dashboard cache for immediate data refresh (Admin only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚙️ Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/settings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "settings"]
+            },
+            "description": "Get system configuration settings"
+          }
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"general\": {\n    \"systemName\": \"Guard CRM Updated\",\n    \"timezone\": \"UTC\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/settings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "settings"]
+            },
+            "description": "Update system settings"
+          }
+        },
+        {
+          "name": "Reset Settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/settings/reset",
+              "host": ["{{base_url}}"],
+              "path": ["api", "settings", "reset"]
+            },
+            "description": "Reset settings to defaults"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔧 Additional Endpoints",
+      "item": [
+        {
+          "name": "Get Team Members",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/team/{{manager_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "team", "{{manager_id}}"]
+            },
+            "description": "Get team members for a specific manager"
+          }
+        },
+        {
+          "name": "Get Managers with Capacity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/managers/capacity",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "managers", "capacity"]
+            },
+            "description": "Get available managers for lead assignment"
+          }
+        },
+        {
+          "name": "Get Leads by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/leads/status/assigned_to_manager",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leads", "status", "assigned_to_manager"]
+            },
+            "description": "Filter leads by specific status"
+          }
+        },
+        {
+          "name": "Toggle User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}/toggle-status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}", "toggle-status"]
+            },
+            "description": "Toggle user active status"
+          }
+        },
+        {
+          "name": "Toggle Organization Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/organizations/{{organization_id}}/toggle-status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "organizations", "{{organization_id}}", "toggle-status"]
+            },
+            "description": "Toggle organization active status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Health & Info",
+      "item": [
+        {
+          "name": "API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api",
+              "host": ["{{base_url}}"],
+              "path": ["api"]
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

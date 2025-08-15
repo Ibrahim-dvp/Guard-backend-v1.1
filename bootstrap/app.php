@@ -16,7 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Add the frontend redirect middleware to web routes
+        $middleware->web(append: [
+            \App\Http\Middleware\FrontendRedirectMiddleware::class,
+        ]);
     })
     ->withProviders([
         App\Providers\AppServiceProvider::class,

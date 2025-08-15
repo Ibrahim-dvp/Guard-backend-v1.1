@@ -16,18 +16,30 @@ class LeadResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'referral' => new UserResource($this->whenLoaded('referral')),
-            'organization' => new OrganizationResource($this->whenLoaded('organization')),
-            'client_info' => $this->client_info,
+            'referralId' => $this->referral_id,
+            'clientInfo' => [
+                'id' => $this->id,
+                'firstName' => $this->client_first_name,
+                'lastName' => $this->client_last_name,
+                'email' => $this->client_email,
+                'phone' => $this->client_phone,
+                'company' => $this->client_company,
+                'address' => null, // Will need to add these fields if required
+                'city' => null,
+                'postalCode' => null,
+                'country' => 'USA',
+                'dateOfBirth' => null,
+                'additionalInfo' => null,
+            ],
             'status' => $this->status,
-            'assignedTo' => new UserResource($this->whenLoaded('assignedTo')),
-            'assignedBy' => new UserResource($this->whenLoaded('assignedBy')),
-            'source' => $this->source,
-            'revenue' => $this->revenue,
-            // 'notes' => NoteResource::collection($this->whenLoaded('notes')),
-            // 'appointments' => AppointmentResource::collection($this->whenLoaded('appointments')),
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'assignedTo' => $this->assigned_to_id,
+            'assignedBy' => $this->assigned_by_id,
+            'createdAt' => $this->created_at?->toISOString(),
+            'updatedAt' => $this->updated_at?->toISOString(),
+            'notes' => [], // Will implement when notes are available
+            'appointments' => [], // Will implement when appointments relationship is ready
+            'revenue' => $this->revenue ?? 0,
+            'source' => $this->source ?? 'Website',
         ];
     }
 }

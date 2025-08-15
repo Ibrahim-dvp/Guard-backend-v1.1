@@ -63,19 +63,25 @@ class EloquentLeadRepository implements LeadRepositoryInterface
     private function applyRoleBasedFilters(Builder $query, User $currentUser): void
     {
         if ($currentUser->hasRole('Sales Agent')) {
+            // Sales Agents only see leads assigned to them
             $query->where('assigned_to_id', $currentUser->id);
         }
 
         if ($currentUser->hasRole('Sales Manager')) {
+            // Sales Managers see leads assigned to them OR leads they assigned to others
             $query->where(function (Builder $q) use ($currentUser) {
-                $q->where('assigned_to_id', $currentUser->id) // Leads assigned to the manager
-                    ->orWhereIn('assigned_to_id', function ($subQuery) use ($currentUser) {
-                        $subQuery->select('id')->from('users')->where('created_by', $currentUser->id);
-                    }); // Or leads assigned to their team members
+                $q->where('assigned_to_id', $currentUser->id)     // Leads assigned to them
+                  ->orWhere('assigned_by_id', $currentUser->id);  // Leads they assigned to others
             });
         }
 
         if ($currentUser->hasRole('Partner Director')) {
+            // Partner Directors see all leads in their organization
+            $query->where('organization_id', $currentUser->organization_id);
+        }
+
+        if ($currentUser->hasRole('Coordinator')) {
+            // Coordinators see all leads in their organization (for assignment purposes)
             $query->where('organization_id', $currentUser->organization_id);
         }
     }
@@ -91,11 +97,7 @@ class EloquentLeadRepository implements LeadRepositoryInterface
         }
 
         if (isset($filters['search'])) {
-            $query->where(function (Builder $q) use ($filters) {
-                $q->where('client_info->firstName', 'like', "%{$filters['search']}%")
-                    ->orWhere('client_info->lastName', 'like', "%{$filters['search']}%")
-                    ->orWhere('client_info->email', 'like', "%{$filters['search']}%");
-            });
+            $query->searchClient($filters['search']);
         }
 
         if (isset($filters['sortField'])) {

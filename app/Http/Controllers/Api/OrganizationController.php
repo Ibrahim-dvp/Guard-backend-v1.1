@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrganizationResource;
@@ -25,33 +25,72 @@ class OrganizationController extends Controller
     {
         $this->authorize('viewAny', Organization::class);
         $organizations = $this->organizationService->getAllOrganizations();
-        return new SuccessResource(OrganizationResource::collection($organizations));
+        
+        return response()->json([
+            'success' => true,
+            'data' => OrganizationResource::collection($organizations),
+        ]);
     }
 
     public function store(StoreOrganizationRequest $request)
     {
         $this->authorize('create', Organization::class);
         $organization = $this->organizationService->createOrganization($request->validated());
-        return new SuccessResource(new OrganizationResource($organization), 'Organization created successfully.');
+        
+        return response()->json([
+            'success' => true,
+            'data' => new OrganizationResource($organization),
+            'message' => 'Organization created successfully.',
+        ], 201);
     }
 
     public function show(Organization $organization)
     {
         $this->authorize('view', $organization);
-        return new SuccessResource(new OrganizationResource($organization));
+        
+        return response()->json([
+            'success' => true,
+            'data' => new OrganizationResource($organization),
+        ]);
     }
 
     public function update(UpdateOrganizationRequest $request, Organization $organization)
     {
         $this->authorize('update', $organization);
         $updatedOrganization = $this->organizationService->updateOrganization($organization, $request->validated());
-        return new SuccessResource(new OrganizationResource($updatedOrganization), 'Organization updated successfully.');
+        
+        return response()->json([
+            'success' => true,
+            'data' => new OrganizationResource($updatedOrganization),
+            'message' => 'Organization updated successfully.',
+        ]);
     }
 
     public function destroy(Organization $organization)
     {
         $this->authorize('delete', $organization);
         $this->organizationService->deleteOrganization($organization);
-        return response()->json(null, 204);
+        
+        return response()->json([
+            'success' => true,
+            'data' => null,
+        ]);
+    }
+
+    /**
+     * Toggle organization status.
+     */
+    public function toggleStatus(Organization $organization)
+    {
+        $this->authorize('update', $organization);
+        
+        $organization->is_active = !$organization->is_active;
+        $organization->save();
+        
+        return response()->json([
+            'success' => true,
+            'data' => new OrganizationResource($organization),
+            'message' => 'Organization status updated successfully.',
+        ]);
     }
 }

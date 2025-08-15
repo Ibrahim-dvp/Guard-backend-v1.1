@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | This is the URL of your frontend application. This is used for
+    | redirections and API responses that need to reference the frontend.
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL', 'https://guard-alpha.vercel.app'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

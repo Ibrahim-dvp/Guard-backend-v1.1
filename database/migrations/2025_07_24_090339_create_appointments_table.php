@@ -15,7 +15,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('lead_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('scheduled_by')->constrained('users')->onDelete('cascade');
-            $table->foreignUuid('scheduled_with')->constrained('users')->onDelete('cascade');
             $table->dateTime('scheduled_at');
             $table->integer('duration')->default(60);
             $table->string('location')->nullable();

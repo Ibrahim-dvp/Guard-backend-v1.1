@@ -16,14 +16,15 @@ class AppointmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'scheduled_at' => $this->scheduled_at->toDateTimeString(),
+            'scheduledAt' => $this->scheduled_at?->toISOString(),
             'duration' => $this->duration,
             'location' => $this->location,
             'notes' => $this->notes,
             'status' => $this->status,
-            'scheduled_by' => new UserResource($this->whenLoaded('scheduledBy')),
-            'scheduled_with' => new UserResource($this->whenLoaded('scheduledWith')),
-            'created_at' => $this->created_at->toDateTimeString(),
+            'lead' => new LeadResource($this->whenLoaded('lead')),
+            'scheduledBy' => new UserResource($this->whenLoaded('scheduledBy')),
+            'createdAt' => $this->created_at?->toISOString(),
+            'updatedAt' => $this->updated_at?->toISOString(),
         ];
     }
 }

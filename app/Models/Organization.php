@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\HasCamelCaseAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class Organization extends Model
 {
     use HasFactory;
     use HasUuids;
+    use HasCamelCaseAttributes;
 
     /**
      * The attributes that are mass assignable.
@@ -49,6 +51,24 @@ class Organization extends Model
     public function director(): BelongsTo
     {
         return $this->belongsTo(User::class, 'director_id');
+    }
+
+    /**
+     * Get the teams that belong to the organization.
+     */
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Team::class);
+    }
+
+    /**
+     * Get only active teams with active users.
+     */
+    public function activeTeams(): HasMany
+    {
+        return $this->teams()->whereHas('users', function ($query) {
+            $query->where('users.is_active', true);
+        });
     }
 
     /**

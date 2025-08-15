@@ -17,7 +17,10 @@ class OrganizationResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'is_active' => $this->is_active,
+            'parentId' => $this->parent_id,
+            'directorId' => $this->director_id,
+            'createdAt' => $this->created_at?->toISOString(),
+            'isActive' => $this->is_active,
         ];
     }
 }
